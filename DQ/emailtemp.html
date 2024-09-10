@@ -207,36 +207,36 @@
         <button type="button" onclick="generateCoinEmail()">Generate Email</button>
     </form>
 
-    <script>
-        function generateCoinEmail() {
-            const nickel = parseInt(document.getElementById('nickel').value) || 0;
-            const dime = parseInt(document.getElementById('dime').value) || 0;
-            const quarter = parseInt(document.getElementById('quarter').value) || 0;
-            const loonie = parseInt(document.getElementById('loonie').value) || 0;
-            const toonie = parseInt(document.getElementById('toonie').value) || 0;
-            const senderName = document.getElementById('sender-name').value;
+<script>
+    function generateCoinEmail() {
+        const nickel = parseInt(document.getElementById('nickel').value) || 0;
+        const dime = parseInt(document.getElementById('dime').value) || 0;
+        const quarter = parseInt(document.getElementById('quarter').value) || 0;
+        const loonie = parseInt(document.getElementById('loonie').value) || 0;
+        const toonie = parseInt(document.getElementById('toonie').value) || 0;
+        const senderName = document.getElementById('sender-name').value;
 
-            const nickelTotal = nickel * 2;
-            const dimeTotal = dime * 5;
-            const quarterTotal = quarter * 10;
-            const loonieTotal = loonie * 25;
-            const toonieTotal = toonie * 50;
-            const grandTotal = nickelTotal + dimeTotal + quarterTotal + loonieTotal + toonieTotal;
+        const nickelTotal = nickel * 2;
+        const dimeTotal = dime * 5;
+        const quarterTotal = quarter * 10;
+        const loonieTotal = loonie * 25;
+        const toonieTotal = toonie * 50;
+        const grandTotal = nickelTotal + dimeTotal + quarterTotal + loonieTotal + toonieTotal;
 
-            const currentDate = new Date().toLocaleDateString();
+        const currentDate = new Date().toLocaleDateString();
 
-            // Helper function to format the rows
-            function formatRow(coin, rolls, total) {
-                const coinLength = 15;
-                const rollsLength = 15;
-                const totalLength = 15;
-                const formattedCoin = coin.padEnd(coinLength);
-                const formattedRolls = rolls.toString().padEnd(rollsLength);
-                const formattedTotal = `$${total.toFixed(2)}`.padStart(totalLength);
-                return `${formattedCoin}${formattedRolls}${formattedTotal}`;
-            }
+        // Helper function to format the rows
+        function formatRow(coin, rolls, total) {
+            const coinLength = 15;
+            const rollsLength = 15;
+            const totalLength = 15;
+            const formattedCoin = coin.padEnd(coinLength);
+            const formattedRolls = rolls.toString().padEnd(rollsLength);
+            const formattedTotal = `$${total.toFixed(2)}`.padStart(totalLength);
+            return `${formattedCoin}${formattedRolls}${formattedTotal}`;
+        }
 
-            const emailBody = `
+        const emailBody = `
 Date: ${currentDate}
 
 Hey there,
@@ -260,14 +260,15 @@ Grand Total: ${' '.repeat(10)} $${grandTotal.toFixed(2)}
 Thank you,
 
 ${senderName}
+        `;
 
-            `;
+        const subject = 'Coin Order Request';
+        const recipients = 'mailbox.b04940@cibc.com, paul.kim@cibc.com, chhaya.kumari@cibc.com'; // List of recipients
+        const mailtoLink = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
-            const subject = 'Coin Order Request';
-            const mailtoLink = `mailto:example@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-            window.location.href = mailtoLink;
-        }
-    </script>
+        window.location.href = mailtoLink;
+    }
+</script>
   </div>
 
     <div id="template2-options" class="template-options">
@@ -290,9 +291,9 @@ ${senderName}
                 const senderName = document.getElementById('sender-name2').value;
 
                 // Construct the email components
-                const emailTo = 'youremail@example.com';  // Replace with the actual email
+                const emailTo = 'monika.schembri@gfs.com';  // Replace with the actual email
                 const subject = 'Special Order Request';
-                const body = `Hello,\n\nI would like to place a special order for the following item:\n\nItem Number: ${itemNumber}\nDescription: ${description}\n\nBest regards,\n${senderName}`;
+                const body = `Hello,\n\nI would like to place a special order for the following item:\n\nItem Number: ${itemNumber}\nDescription: ${description}\n\nBest regards,\n${senderName}\n\nCustomer number 1903000 `;
 
                 // Create the mailto link and open it
                 const mailtoLink = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -315,26 +316,21 @@ ${senderName}
 Choose which DQs you wish to contact:<br>
     <form id="checkboxForm">
         <label>
-            <input type="checkbox" name="option" value="Option 1"> Victoria (Geff Freeland)
+            <input type="checkbox" name="option" value="Option 1"> Geff Freeland
         </label><br>
         <label>
-            <input type="checkbox" name="option" value="Option 2"> Millstream
+            <input type="checkbox" name="option" value="Option 2"> Melanie Hammond
         </label><br>
         <label>
-            <input type="checkbox" name="option" value="Option 3"> Campbell River
+            <input type="checkbox" name="option" value="Option 3"> Campbell River DQ
         </label><br>
         <label>
-            <input type="checkbox" name="option" value="Option 4"> Duncan
+            <input type="checkbox" name="option" value="Option 4"> Travis Berthiaume
         </label><br>
 		        <label>
-            <input type="checkbox" name="option" value="Option 4"> Nanaimo
+            <input type="checkbox" name="option" value="Option 4"> Millstream DQ
         </label><br>
-		        <label>
-            <input type="checkbox" name="option" value="Option 4"> Parksville
-        </label><br>
-		        <label>
-            <input type="checkbox" name="option" value="Option 4"> Surrey
-        </label><br>
+
 		
 <button type="button" onclick="generateEmailx('template5')">Generate Email</button>
     </form>
@@ -343,13 +339,12 @@ Choose which DQs you wish to contact:<br>
             if (templateId === 'template5') {
                 // Define the email addresses for each option
                 const emailAddresses = {
-                    'Victoria (Geff Freeland)': 'victoria@example.com',
-                    'Millstream': 'millstream@example.com',
-                    'Campbell River': 'campbellriver@example.com',
-                    'Duncan': 'duncan@example.com',
-                    'Nanaimo': 'nanaimo@example.com',
-                    'Parksville': 'parksville@example.com',
-                    'Surrey': 'surrey@example.com'
+                    'Geff Freeland': 'dairyqueen@me.com',
+                    'Melanie Hammond': 'mahammonddq@gmail.com',
+                    'Campbell River DQ': 'campbellriverdq@gmail.com',
+                    'Travis Berthiaume': 'travisberthiaume@gmail.com',
+                    'Millstream DQ': 'dq.millstream@gmail.com',
+
                 };
 
                 // Get the form and checkboxes
@@ -368,7 +363,7 @@ Choose which DQs you wish to contact:<br>
                 // Construct the email components
                 const emailTo = recipients.join(','); // Join recipients with commas
                 const subject = 'Contacting DQs';
-                const body = 'Hello,\n\nI would like to discuss the following:\n\n[Your message here]\n\nBest regards,\n[Your Name]';
+                const body = 'Hello,\n\nBest regards,\n[Your Name]';
 
                 // Create the mailto link and open it
                 const mailtoLink = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

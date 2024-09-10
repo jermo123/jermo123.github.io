@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Manager's Dashboard</title>
+    <title>DQ Dashboard 2.0</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -21,12 +21,20 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
-
     <script>
         function openFolder(path) {
             window.pywebview.api.open_folder(path);
         }
     </script>
+
+
+
+    <script>
+        function openBD() {
+            window.open('https://script.google.com/macros/s/AKfycbweeKEF5_cJBT0V516R9ETytpNBRcLCMsyJZ7wT8a10U9civGjLemcZ3OlW3YpKvZI4/exec', 'popupWindow', 'width=800,height=1500,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
+        }
+    </script>
+
 
 <body id="page-top">
 
@@ -86,10 +94,16 @@
                     </div>
                 </div>
             </li>
+
+
+
             <!-- Nav Item - Charts -->
           <li class="nav-item"> <a class="nav-link" href="emailtemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Email Templates</span></a> </li>
-          <li class="nav-item"> <a class="nav-link" href="writetemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Write Up Templates</span></a> </li>			
-          <li class="nav-item"> <a class="nav-link" href="directory.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Business Directory</span></a></li>
+
+          <li class="nav-item"> <a class="nav-link" href="writetemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Write Up Templates</span></a> </li>
+	
+<li class="nav-item"> <a class="nav-link" href="javascript:void(0);" onclick="openBD()"><i class="fas fa-fw fa-chart-area"></i>Business Directory</span></a></li>
+
           <li class="nav-item"> <a class="nav-link" href="shopping.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Shopping List</span></a></li>
           <li class="nav-item"> <a class="nav-link" href="meeting.html"> <i class="fas fa-fw fa-chart-area"></i> 
 			  <span>Meeting Topics</span></a></li>
@@ -254,10 +268,8 @@
                         <p><strong>Ordering: </strong><a href="https://order.gfs.com/" target="_blank">GFS</a> | <a href="https://max.saputo.com/" target="_blank">Saputo</a> | <a href="https://orderonotto.ca/ordering-hub/routes" target="_blank">Bimbo</a>&nbsp;&nbsp;</p>
 <p><a href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank">Vancouver Island DQ Price Sheet&nbsp;</a></p>
                         <p><a href="https://1drv.ms/x/s!AhRmcc_j6cDSgYQr3tGy43rRSQin6Q?e=oP8xEF" target="_blank">Online Cake Orders&nbsp; &nbsp; &nbsp;</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\jeria\\Desktop\\Dashboard'); return false;">Log Sheets</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\jeria\\Desktop\\Dashboard'); return false;">Dropbox</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\jeria\\Desktop\\Dashboard'); return false;">Employee Files</a></p>
-                          <p><a href="cakebook.html" target="_blank">Cake Book&nbsp; &nbsp;</a></p>
+
+                          <p><a href="cakebook.html" target="_blank">Cake Book</a></p>
 							
 							
 							
@@ -265,8 +277,7 @@
                       </div>
 </div>
                   </div>
-                </div>
-                <div>&nbsp;</div>
+
                 <div class="row">
                   <!-- Grow In Utility -->
                   <div class="col-lg-6">
@@ -276,11 +287,18 @@
                       </div>
                       <div class="card-body"> 
                       <p><a href="https://payroll.payworks.ca/loginscreen.asp?LangId=0" target="_blank">Payworks</a></p>
+                      <p><a href="https://airtable.com" target="_blank">AirTable (edit dashboard tables)</a></p>
+                      <p><a href="https://tfwp-jb.lmia.esdc.gc.ca/employer/" target="_blank">LMIA Portal</a></p>
+
+
                         <p><a href="https://www.worksafebc.com/en" target="_blank">WorkSafe BC</a></p>
                         <p><strong>WasteConnections: </strong><a href="https://www.wasteconnectionscanada.com/contact-us/" target="_blank">Missed Garbage Pickup</a></p>
                         <p><a href="https://mybusinesshub.rogers.com/" target="_blank">Rogers Business Hub&nbsp;</a></p>
                       <p><a href="http://grouphealth.websonline.ca/" target="_blank">GroupHEALTH&nbsp;</a></p>
                         <p><strong>DQ Hub: </strong><a href="https://dqhub.dairyqueen.net" target="_blank">Portal</a> | <a href="https://dqhub.dairyqueen.net/tools/cakes-order-management" target="_blank">CakeOrders</a>&nbsp;   | <a href="https://dqhub.dairyqueen.net/tools/dqcakes-site-mgmt" target="_blank">CakeSite</a> | <a href="https://dqhub.dairyqueen.net/tools/digital-publishing" target="_blank">Publishing</a></p>
+
+
+
 
                       </div>
                     </div>
@@ -308,19 +326,21 @@
                   <div class="col-lg-6">
                     <div>&nbsp;</div>
 </div>
-                </div>
-                <div>&nbsp;</div>
-                <div class="row">
+               <div class="row">
                   <!-- Grow In Utility -->
-                  <div class="col-lg-6"> </div>
-                  <!-- Fade In Utility -->
-                  <div class="col-lg-6"> </div>
-                </div>
-              </div>
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
+                  <div class="col-lg-6">
+                    <div class="card position-relative">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Folders (Requires Application)</h6>
+                      </div>
+                      <div class="card-body"> 
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Printables'); return false;">Log Sheets</a></p>
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Dropbox'); return false;">Dropbox</a></p>
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\Desktop\\Employee files'); return false;">Employee Files</a></p>
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Supervisor File'); return false;">Supervisor Files</a></p>
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\DQ FILES\\E drve\\D.Q Manager\\Month End'); return false;">Month End</a></p>
+    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\FOOTAGE'); return false;">Backup Camera Footage</a></p>
+</div></div></div></div></div></div>
 
             <!-- Footer -->
             <footer class="sticky-footer bg-white">

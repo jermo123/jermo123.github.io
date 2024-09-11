@@ -2,12 +2,49 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <title>CVDQ Manager</title>
+    
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- JavaScript Functions -->
+    <script>
+        function openFolder(path) {
+            window.pywebview.api.open_folder(path);
+        }
+
+        function openWindow(url) {
+            window.open(url, 'popupWindow', 'width=800,height=1500,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const formattedDateTime = now.toLocaleString('en-US', options);
+            document.getElementById('datetime').innerText = formattedDateTime;
+        }
+        // Update the date and time every second
+        setInterval(updateDateTime, 1000);
+        document.addEventListener('DOMContentLoaded', updateDateTime);
+    </script>
+</head>
     <style>
        .template-options {
             margin: 20px;
@@ -46,85 +83,66 @@
             margin-top: 10px;
         }
     </style>
-    <title>Write Up Templates</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
-</head>
 
 <body id="page-top">
-
     <!-- Page Wrapper -->
-<div id="wrapper">
-
+    <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                </div>
-                <div class="sidebar-brand-text mx-3">dq courtenay</div>
+                <div class="sidebar-brand-icon rotate-n-15"></div>
+                <div class="sidebar-brand-text mx-3"><img src="img/logo.png" width="75px" height="50px"></div>
             </a>
 
-            <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Dashboard</span>
+                </a>
             </li>
 
-            <!-- Divider -->
-            <!-- Heading -->
-            <!-- Nav Item - Pages Collapse Menu -->            <!-- Nav Item - Utilities Collapse Menu -->
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-<div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
+                <a class="nav-link" href="emailtemp.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Email Templates</span>
+                </a>
             </li>
-          <li class="nav-item"> <a class="nav-link" href="emailtemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Email Templates</span></a> </li>
-          <li class="nav-item active"> <a class="nav-link" href="writetemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Write Up Templates</span></a> </li>			
-          <li class="nav-item"> <a class="nav-link" href="directory.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Business Directory</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="shopping.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Shopping List</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="meeting.html"> <i class="fas fa-fw fa-chart-area"></i> 
-			  <span>Meeting Topics</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="calendar.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Calendar</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="troubleshooting.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Troubleshooting</span></a></li>	
-            <!-- Nav Item - Tables -->
-            <!-- Divider -->
+            <li class="nav-item">
+                <a class="nav-link" href="writetemp.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Write Up Templates</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbweeKEF5_cJBT0V516R9ETytpNBRcLCMsyJZ7wT8a10U9civGjLemcZ3OlW3YpKvZI4/exec')">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Business Directory</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbywBnBcoMeY_G-iXQaTGC2Se-w6KOpb0792bI006MObix3kkr-RdYrHBMLZxWwBsxGH/exec')">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Troubleshooting Guides</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="shopping.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Shopping List</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="meeting.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Meeting Topics</span>
+                </a>
+            </li>
+
             <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">            </div>
-
-            <!-- Sidebar Message -->
-            
         </ul>
         <!-- End of Sidebar -->
-
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 

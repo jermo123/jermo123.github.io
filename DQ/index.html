@@ -22,9 +22,15 @@
             window.pywebview.api.open_folder(path);
         }
 
-        function openWindow(url) {
-            window.open(url, 'popupWindow', 'width=800,height=1500,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
-        }
+function openWindow(url) {
+    const width = 1000;
+    const height = 1500;
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
+    
+    window.open(url, 'popupWindow', `width=${width},height=${height},scrollbars=yes,menubar=no,toolbar=no,location=no,status=no,left=${left},top=${top}`);
+}
+
 
         function updateDateTime() {
             const now = new Date();
@@ -84,7 +90,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbxQkF1yCVMOWag_-q_j2QqkTUqPFfmbJtncEEOQf98E3Z6HiqI_4Clwzsfju9ULW4HD/exec')">
+                <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbwo4QXiLPkyHcuIn-bYqZC7wGxQTlQG99j1ucBQ3fdKXot9UvCciuV2K707gNeuxnxh/exec')">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Troubleshooting Guides</span>
                 </a>

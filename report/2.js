@@ -1,4 +1,4 @@
-// script.js
+// 2.js
 
 // Import necessary classes from docx
 const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType } = docx;

@@ -1,8 +1,5 @@
 // 2.js
 
-// Import necessary classes from docx
-const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType } = docx;
-
 // Wait until the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   const csvFileInput = document.getElementById('csvFile');
@@ -36,6 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+const Document = docx.Document;
+const Packer = docx.Packer;
+const Paragraph = docx.Paragraph;
+const TextRun = docx.TextRun;
+const HeadingLevel = docx.HeadingLevel;
+const AlignmentType = docx.AlignmentType;
+const Table = docx.Table;
+const TableRow = docx.TableRow;
+const TableCell = docx.TableCell;
+const WidthType = docx.WidthType;
 
 /**
  * Processes the CSV data and organizes it into sections.

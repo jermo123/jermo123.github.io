@@ -59,42 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. Cake Designs Carousel Functionality
-    const carousel = document.querySelector('.carousel');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const carouselItems = document.querySelectorAll('.carousel-item');
-    let currentIndex = 0;
-
-    const updateCarousel = () => {
-        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-    };
-
-    prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex === 0) ? carouselItems.length - 1 : currentIndex - 1;
-        updateCarousel();
-    });
-
-    nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex === carouselItems.length - 1) ? 0 : currentIndex + 1;
-        updateCarousel();
-    });
-
-    // Optional: Auto-slide functionality
-    let autoSlide = setInterval(() => {
-        nextBtn.click();
-    }, 5000); // Change slide every 5 seconds
-
-    carousel.addEventListener('mouseenter', () => {
-        clearInterval(autoSlide);
-    });
-
-    carousel.addEventListener('mouseleave', () => {
-        autoSlide = setInterval(() => {
-            nextBtn.click();
-        }, 5000);
-    });
-
+   
     // 4. Accordion Functionality for Guides and Tutorials
     const accordionButtons = document.querySelectorAll('.accordion-button');
 

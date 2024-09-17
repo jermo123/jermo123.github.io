@@ -1,20 +1,7 @@
-// script.js (ES Module)
+// script.js
 
-// Import necessary classes from docx via ES modules
-import { 
-  Document, 
-  Packer, 
-  Paragraph, 
-  TextRun, 
-  HeadingLevel, 
-  AlignmentType, 
-  Table, 
-  TableRow, 
-  TableCell, 
-  WidthType, 
-  BorderStyle, 
-  VerticalAlign 
-} from 'https://unpkg.com/docx@7.4.0/build/index.js';
+// Destructure necessary classes from the global docx object
+const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType, BorderStyle, VerticalAlign } = docx;
 
 // Wait until the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {

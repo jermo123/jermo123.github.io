@@ -218,8 +218,11 @@ function openWindow(url) {
                                     <p><strong>Uber Eats:</strong> <a href="https://merchants.ubereats.com/manager?uclick_id=21bcdceb-4afb-403b-ae09-774a3f9106c9" target="_blank">Portal</a></p>
                                     <p><strong>Cakes:</strong><a href="https://web.na.bambora.com/admin/td_sDefault.asp" target="_blank"> TD Portal</a></p>
                                     <p><strong>Menu:</strong> <a href="https://www.inpulseonline.com/idq/flex-local/login" target="_blank">Digital Board</a></p>
-<div title="Download a sales summary on Brink in CSV format to use this">
+<div title="To use this, input a Summary Report from Brink in CSV format.">
 <p><a href="rpt.html" target="_blank">Sales Summary Report Maker</a></p></div>
+<div title="To use this, input a Raw Car Data CSV file from HME Cloud.">
+<p><a href="dt.html" target="_blank">Drive-Thru Analysis</a></p></div>
+
                                 </div>
                             </div>
                         </div>
@@ -249,14 +252,11 @@ function openWindow(url) {
 <div class="card-body">
 <div id="slideshow">
 <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1037.jpg" class="active">
-
 <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1038.jpg" >
 <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1035.jpg" >
+<img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1034.jpg" >
 <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1036.jpg" >
 <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1033.jpg" >
-
-
-
 </div>
 <script>
     const images = document.querySelectorAll('#slideshow img');
@@ -268,8 +268,23 @@ function openWindow(url) {
         images[currentIndex].classList.add('active');
     }
 
-    setInterval(showNextImage, 5000); // Change image every 5 seconds
+    // Change image every 7 seconds
+    setInterval(showNextImage, 5000);
+
+    // Function to refresh images
+    function refreshImages() {
+        images.forEach(function(img) {
+            const src = img.getAttribute('src');
+            // Append a timestamp to the image source to prevent caching
+            const newSrc = src.split('?')[0] + '?t=' + new Date().getTime();
+            img.setAttribute('src', newSrc);
+        });
+    }
+
+    // Refresh images every 10 minutes (600,000 milliseconds)
+    setInterval(refreshImages, 600000);
 </script>
+
 
 </div>
 </div>

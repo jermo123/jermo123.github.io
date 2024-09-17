@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drive Thru Data Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        #output th, #output td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #output th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        #output tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drive Thru Data Analyzer</h1>
+    <input type="file" id="csvFileInput" accept=".csv" />
+    <button id="processButton">Process File</button>
+    <div id="output"></div>
+    
+    <!-- Include Papa Parse library for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+        document.getElementById('processButton').addEventListener('click', function() {
+            var fileInput = document.getElementById('csvFileInput');
+            var file = fileInput.files[0];
+
+            if (file) {
+                Papa.parse(file, {
+                    header: true,
+                    dynamicTyping: true,
+                    complete: function(results) {
+                        processData(results.data);
+                    }
+                });
+            } else {
+                alert('Please select a CSV file first.');
+            }
+        });
+
+        function processData(data) {
+            // Prepare an array to hold processed data
+            var processedData = [];
+            
+            // Loop through the data
+            for (var i = 0; i < data.length; i++) {
+                var row = data[i];
+                // Check for empty rows or invalid data
+                if (!row['Departure Time'] || !row['Lane Total']) {
+                    continue;
+                }
+                
+                // Convert 'Departure Time' to Date object
+                var departureTime = parseDateTime(row['Departure Time']);
+                if (!departureTime) {
+                    continue;
+                }
+                
+                // Adjust 'Lane Total' format and convert to total seconds
+                var laneTotalSeconds = convertToTimeDuration(row['Lane Total']);
+                
+                // Extract date
+                var date = new Date(departureTime.getFullYear(), departureTime.getMonth(), departureTime.getDate());
+                
+                // Filter data for 'Departure' events between 10 am and 11 pm
+                if (row['Event'] === 'Departure' && departureTime.getHours() >= 10 && departureTime.getHours() <= 22) {
+                    processedData.push({
+                        'Date': date,
+                        'Hour': departureTime.getHours(),
+                        'Lane Total Seconds': laneTotalSeconds
+                    });
+                }
+            }
+            
+            // Now group the data by date and hour
+            var summary = groupData(processedData);
+            
+            // Display the summary
+            displaySummary(summary);
+        }
+
+        function parseDateTime(dateTimeStr) {
+            // Expected format: MM/DD/YYYY HH:MM:SS AM/PM
+            var dateTimeParts = dateTimeStr.split(' ');
+            if (dateTimeParts.length !== 3) {
+                return null;
+            }
+            var datePart = dateTimeParts[0];
+            var timePart = dateTimeParts[1];
+            var ampmPart = dateTimeParts[2];
+            
+            var dateParts = datePart.split('/');
+            if (dateParts.length !== 3) {
+                return null;
+            }
+            var month = parseInt(dateParts[0], 10) - 1; // Months are zero-based in JS
+            var day = parseInt(dateParts[1], 10);
+            var year = parseInt(dateParts[2], 10);
+            
+            var timeParts = timePart.split(':');
+            if (timeParts.length !== 3) {
+                return null;
+            }
+            var hour = parseInt(timeParts[0], 10);
+            var minute = parseInt(timeParts[1], 10);
+            var second = parseInt(timeParts[2], 10);
+            
+            if (ampmPart === 'PM' && hour < 12) {
+                hour += 12;
+            } else if (ampmPart === 'AM' && hour === 12) {
+                hour = 0;
+            }
+            
+            return new Date(year, month, day, hour, minute, second);
+        }
+
+        function convertToTimeDuration(timeStr) {
+            var parts = timeStr.split(':');
+            if (parts.length === 2) { // mm:ss
+                timeStr = '00:' + timeStr;
+            } else if (parts.length === 1) { // ss
+                timeStr = '00:00:' + timeStr;
+            }
+            var timeParts = timeStr.split(':');
+            var hours = parseInt(timeParts[0], 10);
+            var minutes = parseInt(timeParts[1], 10);
+            var seconds = parseInt(timeParts[2], 10);
+            return hours * 3600 + minutes * 60 + seconds; // Total seconds
+        }
+
+        function groupData(data) {
+            var groups = {};
+            
+            data.forEach(function(item) {
+                var key = item.Date.toDateString() + ' ' + item.Hour;
+                if (!groups[key]) {
+                    groups[key] = {
+                        Date: item.Date,
+                        Hour: item.Hour,
+                        Cars_Count: 0,
+                        Total_Lane_Total_Seconds: 0
+                    };
+                }
+                groups[key].Cars_Count += 1;
+                groups[key].Total_Lane_Total_Seconds += item['Lane Total Seconds'];
+            });
+            
+            // Convert the groups object to an array
+            var summaryArray = [];
+            for (var key in groups) {
+                var group = groups[key];
+                group.Average_Lane_Total_Time = group.Total_Lane_Total_Seconds / group.Cars_Count / 60; // Convert to minutes
+                summaryArray.push(group);
+            }
+            
+            // Sort the summaryArray by Date and Hour
+            summaryArray.sort(function(a, b) {
+                if (a.Date < b.Date) return -1;
+                if (a.Date > b.Date) return 1;
+                if (a.Hour < b.Hour) return -1;
+                if (a.Hour > b.Hour) return 1;
+                return 0;
+            });
+            
+            return summaryArray;
+        }
+
+        function displaySummary(summary) {
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            
+            var table = document.createElement('table');
+            var headerRow = document.createElement('tr');
+            var headers = ['Date', 'Time', 'Cars Count', 'Average Lane Total Time (minutes)'];
+            headers.forEach(function(headerText) {
+                var th = document.createElement('th');
+                th.appendChild(document.createTextNode(headerText));
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+            
+            summary.forEach(function(item) {
+                var row = document.createElement('tr');
+                
+                var dateCell = document.createElement('td');
+                dateCell.appendChild(document.createTextNode(item.Date.toLocaleDateString()));
+                row.appendChild(dateCell);
+                
+                var timeCell = document.createElement('td');
+                timeCell.appendChild(document.createTextNode(item.Hour + ':00'));
+                row.appendChild(timeCell);
+                
+                var countCell = document.createElement('td');
+                countCell.appendChild(document.createTextNode(item.Cars_Count));
+                row.appendChild(countCell);
+                
+                var avgTimeCell = document.createElement('td');
+                avgTimeCell.appendChild(document.createTextNode(item.Average_Lane_Total_Time.toFixed(2)));
+                row.appendChild(avgTimeCell);
+                
+                table.appendChild(row);
+            });
+            
+            outputDiv.appendChild(table);
+        }
+    </script>
+</body>
+</html>

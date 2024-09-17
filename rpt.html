@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Summary Report</title>
+    <style>
+        /* Basic styling for the report */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9pt;
+            margin: 0.5in; /* Adjusted margin */
+        }
+        h1 {
+            text-align: center;
+            font-size: 14pt; /* Slightly larger for better readability */
+        }
+        h2 {
+            font-size: 12pt;
+            margin-top: 16pt;
+            margin-bottom: 8pt;
+        }
+        p {
+            margin: 6pt 0;
+            text-align: center; /* Center-align the date */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8pt;
+            table-layout: fixed; /* Fixed table layout */
+        }
+        table, th, td {
+            border: 1px solid black;
+            font-size: 8pt; /* Slightly smaller font size */
+        }
+        th, td {
+            padding: 4px;
+            text-align: left;
+            word-wrap: break-word; /* Break long words */
+        }
+        th {
+            font-weight: bold;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        /* Hide file input when printing */
+        @media print {
+            input[type="file"] {
+                display: none;
+            }
+            body {
+                margin: 0.5in; /* Adjusted margin for printing */
+                font-size: 8pt; /* Slightly smaller font size for printing */
+            }
+            table, th, td {
+                border: 1px solid black;
+                font-size: 7pt; /* Smaller font size for tables */
+            }
+            h1 {
+                font-size: 12pt;
+            }
+            h2 {
+                font-size: 10pt;
+                margin-top: 12pt;
+                margin-bottom: 6pt;
+            }
+            p {
+                font-size: 9pt;
+                margin: 4pt 0;
+            }
+            /* Prevent page breaks inside tables */
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+    <!-- Include Papa Parse from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>Sales Summary Report</h1>
+    <input type="file" id="csvFileInput" accept=".csv" />
+    <div id="report"></div>
+
+    <script>
+        // Event listener for the file input
+        document.getElementById('csvFileInput').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                Papa.parse(file, {
+                    complete: function(results) {
+                        var data = results.data;
+                        processCSVData(data);
+                    },
+                    error: function(err) {
+                        console.error('Error parsing CSV:', err);
+                    }
+                });
+            }
+        });
+
+        // Function to process the CSV data
+        function processCSVData(data) {
+            var sections = parseSections(data);
+            generateReport(sections);
+        }
+
+        // Function to parse sections from the data
+        function parseSections(data) {
+            var sectionHeaders = ['Sales Summary', 'Revenue Centers', 'Tenders', 'Taxes',
+                                  'Cash Skims', 'Discounts', 'Promotions', 'Destinations'];
+
+            var includeSections = ['Sales Summary', 'Revenue Centers', 'Tenders', 'Taxes'];
+
+            var sections = {};
+            var currentSection = null;
+
+            data.forEach(function(row) {
+                // Clean up the row
+                row = row.map(cell => cell.trim()).filter(cell => cell !== '');
+                if (row.length === 0) return;
+
+                var firstItem = row[0];
+                if (sectionHeaders.includes(firstItem)) {
+                    if (includeSections.includes(firstItem)) {
+                        currentSection = firstItem;
+                        sections[currentSection] = [];
+                        sections[currentSection].push(row);
+                    } else {
+                        currentSection = 'Skip';
+                    }
+                } else if (firstItem.startsWith('Page ')) {
+                    // Skip page footer
+                } else if (currentSection && currentSection !== 'Skip') {
+                    sections[currentSection].push(row);
+                } else {
+                    currentSection = null;
+                }
+            });
+            return sections;
+        }
+
+        // Function to generate the report
+        function generateReport(sections) {
+            var reportDiv = document.getElementById('report');
+            reportDiv.innerHTML = ''; // Clear previous content
+
+            // Check for 'Sales Summary' section
+            if (!sections['Sales Summary'] || sections['Sales Summary'].length === 0) {
+                reportDiv.innerHTML = "<p>Error: 'Sales Summary' section not found or is empty.</p>";
+                return;
+            }
+
+            var salesSummarySection = sections['Sales Summary'];
+
+            // Extract location and date dynamically
+            var locationText = '';
+            var dateText = '';
+
+            // Search the first row for location
+            salesSummarySection[0].forEach(function(cell) {
+                if (cell && cell.match(/^\d+ - .+/)) {
+                    locationText = cell;
+                }
+            });
+
+            // Search the second row for date
+            salesSummarySection[1].forEach(function(cell) {
+                if (cell && cell.match(/^\w+,\s\w+\s\d{1,2},\s\d{4}$/)) {
+                    dateText = cell;
+                }
+            });
+
+            // If dateText is still empty, try to get the last non-empty cell
+            if (!dateText) {
+                for (var i = salesSummarySection[1].length - 1; i >= 0; i--) {
+                    if (salesSummarySection[1][i].trim() !== '') {
+                        dateText = salesSummarySection[1][i].trim();
+                        break;
+                    }
+                }
+            }
+
+            // Display date (you can include locationText if desired)
+            var datePara = document.createElement('p');
+            datePara.innerText = dateText;
+            reportDiv.appendChild(datePara);
+
+            // Remove the first two lines used above
+            var salesSummaryRows = salesSummarySection.slice(2);
+
+            // Create 'Sales Overview' heading
+            var salesOverviewHeading = document.createElement('h2');
+            salesOverviewHeading.innerText = 'Sales Overview';
+            reportDiv.appendChild(salesOverviewHeading);
+
+            // Process sales summary data
+            var flattenedData = [];
+            salesSummaryRows.forEach(function(row) {
+                row.forEach(function(cell) {
+                    if (cell.trim() !== '') {
+                        flattenedData.push(cell);
+                    }
+                });
+            });
+
+            // Extract key-value pairs
+            var keyValuePairs = [];
+            for (var i = 0; i < flattenedData.length; i++) {
+                var key = flattenedData[i];
+                var value = flattenedData[i + 1] ? flattenedData[i + 1].replace(/,/g, '') : '';
+                if (isNaN(value.replace(/[^0-9.-]+/g,""))) {
+                    value = '';
+                } else {
+                    i++;
+                }
+                keyValuePairs.push({ key: key, value: value });
+            }
+
+            // Create table with four columns
+            var numColumns = 4;
+            var table = document.createElement('table');
+            var tbody = document.createElement('tbody');
+            for (var i = 0; i < keyValuePairs.length; i += numColumns) {
+                var tr = document.createElement('tr');
+                for (var j = 0; j < numColumns; j++) {
+                    if (i + j < keyValuePairs.length) {
+                        var pair = keyValuePairs[i + j];
+                        var td = document.createElement('td');
+                        td.innerText = pair.key + ': ' + pair.value;
+                        tr.appendChild(td);
+                    }
+                }
+                tbody.appendChild(tr);
+            }
+            table.appendChild(tbody);
+            reportDiv.appendChild(table);
+
+            // Function to create tables for other sections
+            function createSectionTable(sectionName) {
+                if (sections[sectionName]) {
+                    var heading = document.createElement('h2');
+                    heading.innerText = sectionName;
+                    reportDiv.appendChild(heading);
+
+                    var sectionRows = sections[sectionName].filter(row => row.length > 0);
+
+                    if (sectionRows.length === 0) return;
+
+                    var headers = sectionRows[1];
+                    var table = document.createElement('table');
+                    var thead = document.createElement('thead');
+                    var headerRow = document.createElement('tr');
+
+                    headers.forEach(function(header) {
+                        var th = document.createElement('th');
+                        th.innerText = header;
+                        headerRow.appendChild(th);
+                    });
+
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    var tbody = document.createElement('tbody');
+
+                    sectionRows.slice(2).forEach(function(row) {
+                        if (row.includes('Total')) return;
+                        var tr = document.createElement('tr');
+                        row.forEach(function(cell) {
+                            var td = document.createElement('td');
+                            td.innerText = cell.replace(/,/g, '');
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+
+                    table.appendChild(tbody);
+                    reportDiv.appendChild(table);
+                }
+            }
+
+            // Generate tables for specific sections
+            createSectionTable('Revenue Centers');
+            createSectionTable('Tenders');
+
+            // Special handling for 'Taxes' section
+            if (sections['Taxes']) {
+                var heading = document.createElement('h2');
+                heading.innerText = 'Taxes';
+                reportDiv.appendChild(heading);
+
+                var sectionRows = sections['Taxes'].filter(row => row.length > 0);
+
+                if (sectionRows.length > 0) {
+                    var headers = sectionRows[1];
+                    var table = document.createElement('table');
+                    var thead = document.createElement('thead');
+                    var headerRow = document.createElement('tr');
+
+                    headers.forEach(function(header) {
+                        var th = document.createElement('th');
+                        th.innerText = header;
+                        headerRow.appendChild(th);
+                    });
+
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    var tbody = document.createElement('tbody');
+
+                    sectionRows.slice(2).forEach(function(row) {
+                        if (['GST Tax', 'PST Tax'].includes(row[0])) {
+                            var tr = document.createElement('tr');
+                            row.forEach(function(cell) {
+                                var td = document.createElement('td');
+                                td.innerText = cell.replace(/,/g, '');
+                                tr.appendChild(td);
+                            });
+                            tbody.appendChild(tr);
+                        }
+                    });
+
+                    table.appendChild(tbody);
+                    reportDiv.appendChild(table);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

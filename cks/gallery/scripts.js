@@ -40,14 +40,14 @@ const galleryData = {
             id: 6,
             title: "AO8 Circle of Rosebuds",
             description: "  ",
-            img: "images/standard/ao14-icing-swirls_200x200.jpg"
+            img: "images/standard/ao18-circle-of-rosebuds-icing_200x200.jpg"
         },
 
         {
             id: 7,
             title: "AO19 Roses with Bud Border",
             description: "  ",
-            img: "images/standard/ao14-icing-swirls_200x200.jpg"
+            img: "images/standard/ao19-roses-with-bud-border-icing_200x200.jpg"
         },
 
         {
@@ -222,7 +222,7 @@ const galleryData = {
 
         {
             id: 31,
-            title: "Canada Day (no writing)",
+            title: "Canada Day",
             description: "  ",
             img: "images/standard/o20-canada-day-icing_200x200.jpg"
         },

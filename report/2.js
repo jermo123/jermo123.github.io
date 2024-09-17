@@ -1,6 +1,5 @@
 // 2.js
 
-// Wait until the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   const csvFileInput = document.getElementById('csvFile');
   const generateReportButton = document.getElementById('generateReport');
@@ -34,190 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-const Document = docx.Document;
-const Packer = docx.Packer;
-const Paragraph = docx.Paragraph;
-const TextRun = docx.TextRun;
-const HeadingLevel = docx.HeadingLevel;
-const AlignmentType = docx.AlignmentType;
-const Table = docx.Table;
-const TableRow = docx.TableRow;
-const TableCell = docx.TableCell;
-const WidthType = docx.WidthType;
+function generateWordDocument(report) {
+  // Now access the docx library after it's been loaded correctly
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell, WidthType } = docx;
 
-/**
- * Processes the CSV data and organizes it into sections.
- * @param {Array<Array<string>>} data - The parsed CSV data.
- * @returns {Object} - An object containing organized sections.
- */
-function processData(data) {
-  const sectionHeaders = ['Sales Summary', 'Revenue Centers', 'Tenders', 'Taxes',
-                         'Cash Skims', 'Discounts', 'Promotions', 'Destinations'];
-
-  const includeSections = ['Sales Summary', 'Revenue Centers', 'Tenders', 'Taxes'];
-  const excludeSections = ['Cash Skims', 'Discounts', 'Promotions', 'Destinations'];
-
-  const sections = {};
-  let currentSection = null;
-
-  data.forEach(row => {
-    // Remove empty strings and trim whitespace
-    row = row.map(cell => cell.trim()).filter(cell => cell !== '');
-    if (row.length === 0) return; // Skip empty rows
-
-    const firstItem = row[0];
-    if (sectionHeaders.includes(firstItem)) {
-      if (includeSections.includes(firstItem)) {
-        currentSection = firstItem;
-        sections[currentSection] = [];
-        sections[currentSection].push(row); // Include the section header row
-      } else {
-        currentSection = 'Skip'; // Skipping this section
-      }
-      return;
-    } else if (firstItem.startsWith('Page ')) {
-      return; // Skip page footer
-    }
-
-    if (currentSection && currentSection !== 'Skip') {
-      sections[currentSection].push(row);
-    } else {
-      currentSection = null;
-    }
-  });
-
-  // Ensure 'Sales Summary' exists
-  if (!sections['Sales Summary'] || sections['Sales Summary'].length === 0) {
-    throw new Error("Error: 'Sales Summary' section not found or is empty.");
-  }
-
-  // Extract date and location
-  const salesSummarySection = sections['Sales Summary'];
-  let locationText = '';
-  if (salesSummarySection[0].length > 1) {
-    locationText = salesSummarySection[0][1];
-  }
-
-  let dateText = '';
-  if (salesSummarySection.length > 1 && salesSummarySection[1].length > 0) {
-    dateText = salesSummarySection[1][0];
-  }
-
-  const dateLocation = `${dateText} ${locationText}`;
-
-  // Remove the first two rows as they are used above
-  const salesSummaryRows = salesSummarySection.slice(2);
-
-  // Process Sales Summary
-  const salesData = [];
-
-  // Flatten the data
-  const flattenedData = salesSummaryRows.flat().filter(cell => cell !== '');
-
-  // Extract key-value pairs
-  const keyValuePairs = [];
-  let i = 0;
-  while (i < flattenedData.length) {
-    const key = flattenedData[i];
-    let value = '';
-    if (i + 1 < flattenedData.length) {
-      const potentialValue = flattenedData[i + 1];
-      if (sectionHeaders.includes(potentialValue) || /^[^\d\$\.\%]+$/.test(potentialValue)) {
-        value = '';
-        i += 1;
-      } else {
-        value = potentialValue.replace(/,/g, '');
-        i += 2;
-      }
-    } else {
-      i += 1;
-    }
-    keyValuePairs.push({ key, value });
-  }
-
-  // Remove duplicates while preserving order
-  const seen = new Set();
-  const keyValuePairsUnique = keyValuePairs.filter(pair => {
-    if (seen.has(pair.key)) {
-      return false;
-    }
-    seen.add(pair.key);
-    return true;
-  });
-
-  // Organize into columns (4 columns)
-  const salesOverview = [];
-  const numColumns = 4;
-  for (let j = 0; j < keyValuePairsUnique.length; j += numColumns) {
-    const row = keyValuePairsUnique.slice(j, j + numColumns);
-    salesOverview.push(row);
-  }
-
-  // Function to create section tables
-  const createSectionTable = (sectionName) => {
-    if (!(sectionName in sections)) return null;
-
-    const sectionRows = sections[sectionName].filter(row => row.some(cell => cell.trim() !== ''));
-
-    if (sectionRows.length < 2) return null; // Need at least header and one data row
-
-    const headers = sectionRows[1]; // Assuming the second row contains headers
-    const dataRows = sectionRows.slice(2).filter(row => !row.some(cell => /Total/i.test(cell)));
-
-    // Process data rows
-    const processedRows = dataRows.map(row => {
-      return row.map(cell => {
-        // Remove commas within numbers
-        return cell.replace(/,/g, '');
-      });
-    });
-
-    return {
-      headers,
-      data: processedRows
-    };
-  };
-
-  // Process Taxes separately to include only GST Tax and PST Tax
-  const processTaxesSection = () => {
-    if (!('Taxes' in sections)) return null;
-
-    const sectionRows = sections['Taxes'].filter(row => row.some(cell => cell.trim() !== ''));
-
-    if (sectionRows.length < 2) return null;
-
-    const headers = sectionRows[1];
-    const dataRows = sectionRows.slice(2).filter(row => ['GST Tax', 'PST Tax'].includes(row[0]));
-
-    const processedRows = dataRows.map(row => {
-      return row.map(cell => cell.replace(/,/g, ''));
-    });
-
-    return {
-      headers,
-      data: processedRows
-    };
-  };
-
-  // Compile all processed data into a report object
-  const report = {
-    dateLocation,
-    salesOverview,
-    sections: {
-      'Revenue Centers': createSectionTable('Revenue Centers'),
-      'Tenders': createSectionTable('Tenders'),
-      'Taxes': processTaxesSection()
-    }
-  };
-
-  return report;
-}
-
-/**
- * Generates the Word document using the processed report data.
- * @param {Object} report - The processed report data.
- */
-async function generateWordDocument(report) {
   const doc = new Document({
     sections: [{
       properties: {
@@ -388,3 +207,5 @@ async function generateWordDocument(report) {
 function convertInchesToTwip(inches) {
   return inches * 1440;
 }
+
+

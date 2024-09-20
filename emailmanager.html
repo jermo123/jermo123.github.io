@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template Manager & Sender</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1000px;
+        }
+        .template-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        /* Additional styling for Send Email section */
+        .send-section {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Email Template Manager & Sender</h1>
+        
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="manage-tab" data-bs-toggle="tab" data-bs-target="#manage" type="button" role="tab" aria-controls="manage" aria-selected="true">
+                    Manage Templates
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#send" type="button" role="tab" aria-controls="send" aria-selected="false">
+                    Send Email
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- Manage Templates Tab -->
+            <div class="tab-pane fade show active" id="manage" role="tabpanel" aria-labelledby="manage-tab">
+                <!-- Template Form -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <span id="form-title">Create New Template</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="template-form">
+                            <input type="hidden" id="template-id">
+                            <div class="mb-3">
+                                <label for="template-name" class="form-label">Template Name</label>
+                                <input type="text" class="form-control" id="template-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="template-subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="template-subject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="template-recipients" class="form-label">Recipients (comma separated emails)</label>
+                                <input type="email" class="form-control" id="template-recipients" multiple required>
+                                <div class="form-text">Separate multiple email addresses with commas.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="template-body" class="form-label">Email Body</label>
+                                <textarea class="form-control" id="template-body" rows="6" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="save-button">Save Template</button>
+                            <button type="button" class="btn btn-secondary d-none" id="cancel-button">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search Bar and Backup/Restore Buttons -->
+                <div class="d-flex justify-content-between mb-3">
+                    <input type="text" class="form-control me-2" id="search-bar" placeholder="Search Templates...">
+                    <div>
+                        <button class="btn btn-success me-2" id="export-button" title="Export Templates">
+                            <i class="fa fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-primary" id="import-button" title="Import Templates">
+                            <i class="fa fa-upload"></i> Import
+                        </button>
+                        <input type="file" id="import-file" accept=".json" class="d-none">
+                    </div>
+                </div>
+
+                <!-- Template List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Saved Templates</h5>
+                    </div>
+                    <ul class="list-group list-group-flush template-list" id="template-list">
+                        <!-- Templates will be dynamically inserted here -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Send Email Tab -->
+            <div class="tab-pane fade send-section" id="send" role="tabpanel" aria-labelledby="send-tab">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Select a Template to Send</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search Bar for Send Email -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="send-search-bar" placeholder="Search Templates to Send...">
+                        </div>
+                        <!-- Template List for Sending -->
+                        <ul class="list-group list-group-flush template-list" id="send-template-list">
+                            <!-- Templates will be dynamically inserted here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies (Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Main JavaScript -->
+    <script>
+        // TemplateManager Module
+        const TemplateManager = (() => {
+            const STORAGE_KEY = 'emailTemplates';
+
+            const getTemplates = () => {
+                const templates = localStorage.getItem(STORAGE_KEY);
+                return templates ? JSON.parse(templates) : [];
+            };
+
+            const saveTemplates = (templates) => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+            };
+
+            const addTemplate = (template) => {
+                const templates = getTemplates();
+                templates.push(template);
+                saveTemplates(templates);
+            };
+
+            const updateTemplate = (updatedTemplate) => {
+                let templates = getTemplates();
+                templates = templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t);
+                saveTemplates(templates);
+            };
+
+            const deleteTemplate = (id) => {
+                let templates = getTemplates();
+                templates = templates.filter(t => t.id !== id);
+                saveTemplates(templates);
+            };
+
+            const exportTemplates = () => {
+                const templates = getTemplates();
+                const dataStr = JSON.stringify(templates, null, 4);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'email_templates_backup.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const importTemplates = (importedTemplates) => {
+                const existingTemplates = getTemplates();
+                // Handle duplicates based on template IDs
+                const existingIds = new Set(existingTemplates.map(t => t.id));
+                const newTemplates = importedTemplates.filter(t => !existingIds.has(t.id));
+                const mergedTemplates = [...existingTemplates, ...newTemplates];
+                saveTemplates(mergedTemplates);
+            };
+
+            return {
+                getTemplates,
+                addTemplate,
+                updateTemplate,
+                deleteTemplate,
+                exportTemplates,
+                importTemplates
+            };
+        })();
+
+        // UIController Module
+        const UIController = (() => {
+            const DOMElements = {
+                // Manage Templates
+                templateForm: document.getElementById('template-form'),
+                templateName: document.getElementById('template-name'),
+                templateSubject: document.getElementById('template-subject'),
+                templateRecipients: document.getElementById('template-recipients'),
+                templateBody: document.getElementById('template-body'),
+                templateList: document.getElementById('template-list'),
+                formTitle: document.getElementById('form-title'),
+                saveButton: document.getElementById('save-button'),
+                cancelButton: document.getElementById('cancel-button'),
+                templateId: document.getElementById('template-id'),
+                searchBar: document.getElementById('search-bar'),
+                exportButton: document.getElementById('export-button'),
+                importButton: document.getElementById('import-button'),
+                importFile: document.getElementById('import-file'),
+
+                // Send Email
+                sendSearchBar: document.getElementById('send-search-bar'),
+                sendTemplateList: document.getElementById('send-template-list')
+            };
+
+            const clearForm = () => {
+                DOMElements.templateId.value = '';
+                DOMElements.templateName.value = '';
+                DOMElements.templateSubject.value = '';
+                DOMElements.templateRecipients.value = '';
+                DOMElements.templateBody.value = '';
+                DOMElements.formTitle.textContent = 'Create New Template';
+                DOMElements.saveButton.textContent = 'Save Template';
+                DOMElements.cancelButton.classList.add('d-none');
+            };
+
+            const populateForm = (template) => {
+                DOMElements.templateId.value = template.id;
+                DOMElements.templateName.value = template.name;
+                DOMElements.templateSubject.value = template.subject;
+                DOMElements.templateRecipients.value = template.recipients.join(', ');
+                DOMElements.templateBody.value = template.body;
+                DOMElements.formTitle.textContent = 'Edit Template';
+                DOMElements.saveButton.textContent = 'Update Template';
+                DOMElements.cancelButton.classList.remove('d-none');
+            };
+
+            const renderTemplates = (templates) => {
+                DOMElements.templateList.innerHTML = '';
+                if (templates.length === 0) {
+                    DOMElements.templateList.innerHTML = '<li class="list-group-item">No templates found.</li>';
+                    return;
+                }
+                templates.forEach(template => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-start';
+                    li.innerHTML = `
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">${template.name}</div>
+                            <div><strong>Subject:</strong> ${template.subject}</div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-info me-2 view-template" data-id="${template.id}" title="View">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning me-2 edit-template" data-id="${template.id}" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-template" data-id="${template.id}" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    DOMElements.templateList.appendChild(li);
+                });
+            };
+
+            const renderSendTemplates = (templates) => {
+                DOMElements.sendTemplateList.innerHTML = '';
+                if (templates.length === 0) {
+                    DOMElements.sendTemplateList.innerHTML = '<li class="list-group-item">No templates available to send.</li>';
+                    return;
+                }
+                templates.forEach(template => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `
+                        <div>
+                            <div class="fw-bold">${template.name}</div>
+                            <div><strong>Subject:</strong> ${template.subject}</div>
+                        </div>
+                        <button class="btn btn-sm btn-primary send-template" data-id="${template.id}" title="Send Email">
+                            <i class="fa fa-paper-plane"></i> Send
+                        </button>
+                    `;
+                    DOMElements.sendTemplateList.appendChild(li);
+                });
+            };
+
+            const getFormData = () => {
+                const id = DOMElements.templateId.value || `tmpl_${Date.now()}`;
+                const name = DOMElements.templateName.value.trim();
+                const subject = DOMElements.templateSubject.value.trim();
+                const recipients = DOMElements.templateRecipients.value.split(',').map(email => email.trim()).filter(email => email);
+                const body = DOMElements.templateBody.value.trim();
+
+                return { id, name, subject, recipients, body };
+            };
+
+            const showAlert = (message, type = 'success') => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                alertDiv.role = 'alert';
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.container').prepend(alertDiv);
+                setTimeout(() => {
+                    alertDiv.classList.remove('show');
+                    alertDiv.classList.add('hide');
+                }, 3000);
+            };
+
+            const filterTemplates = (searchTerm) => {
+                const allTemplates = TemplateManager.getTemplates();
+                return allTemplates.filter(template => 
+                    template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    template.subject.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            };
+
+            return {
+                DOM: DOMElements,
+                clearForm,
+                populateForm,
+                renderTemplates,
+                renderSendTemplates,
+                getFormData,
+                showAlert,
+                filterTemplates
+            };
+        })();
+
+        // AppController Module
+        const AppController = ((TemplateMgr, UI) => {
+            const setupEventListeners = () => {
+                // Handle form submission
+                UI.DOM.templateForm.addEventListener('submit', handleFormSubmit);
+
+                // Handle cancel button
+                UI.DOM.cancelButton.addEventListener('click', UI.clearForm);
+
+                // Handle template list actions
+                UI.DOM.templateList.addEventListener('click', handleTemplateListClick);
+
+                // Handle search in Manage Templates
+                UI.DOM.searchBar.addEventListener('input', handleSearch);
+
+                // Handle export button
+                UI.DOM.exportButton.addEventListener('click', handleExport);
+
+                // Handle import button
+                UI.DOM.importButton.addEventListener('click', () => {
+                    UI.DOM.importFile.click();
+                });
+
+                // Handle file selection for import
+                UI.DOM.importFile.addEventListener('change', handleImport);
+
+                // Handle search in Send Email
+                UI.DOM.sendSearchBar.addEventListener('input', handleSendSearch);
+
+                // Handle send button in Send Email
+                UI.DOM.sendTemplateList.addEventListener('click', handleSendTemplateClick);
+            };
+
+            const handleFormSubmit = (e) => {
+                e.preventDefault();
+                const template = UI.getFormData();
+
+                if (UI.DOM.templateId.value) {
+                    // Update existing template
+                    TemplateMgr.updateTemplate(template);
+                    UI.showAlert('Template updated successfully!', 'success');
+                } else {
+                    // Create new template
+                    TemplateMgr.addTemplate(template);
+                    UI.showAlert('Template created successfully!', 'success');
+                }
+
+                UI.clearForm();
+                renderAllTemplates();
+                renderSendTemplates();
+            };
+
+            const handleTemplateListClick = (e) => {
+                const target = e.target.closest('button');
+                if (!target) return;
+
+                const id = target.getAttribute('data-id');
+                if (target.classList.contains('edit-template')) {
+                    const template = TemplateMgr.getTemplates().find(t => t.id === id);
+                    if (template) {
+                        UI.populateForm(template);
+                    }
+                } else if (target.classList.contains('delete-template')) {
+                    if (confirm('Are you sure you want to delete this template?')) {
+                        TemplateMgr.deleteTemplate(id);
+                        UI.showAlert('Template deleted successfully!', 'danger');
+                        renderAllTemplates();
+                        renderSendTemplates();
+                    }
+                } else if (target.classList.contains('view-template')) {
+                    const template = TemplateMgr.getTemplates().find(t => t.id === id);
+                    if (template) {
+                        showTemplatePreview(template);
+                    }
+                }
+            };
+
+            const showTemplatePreview = (template) => {
+                const modalHtml = `
+                    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="previewModalLabel">${template.name} - Preview</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p><strong>Subject:</strong> ${template.subject}</p>
+                            <p><strong>Recipients:</strong> ${template.recipients.join(', ')}</p>
+                            <hr>
+                            <p>${template.body.replace(/\n/g, '<br>')}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+                previewModal.show();
+
+                document.getElementById('previewModal').addEventListener('hidden.bs.modal', () => {
+                    document.getElementById('previewModal').remove();
+                });
+            };
+
+            const handleSearch = (e) => {
+                const searchTerm = e.target.value;
+                const filteredTemplates = UI.filterTemplates(searchTerm);
+                UI.renderTemplates(filteredTemplates);
+            };
+
+            const renderAllTemplates = () => {
+                const templates = TemplateMgr.getTemplates();
+                UI.renderTemplates(templates);
+            };
+
+            const handleExport = () => {
+                TemplateMgr.exportTemplates();
+                UI.showAlert('Templates exported successfully!', 'success');
+            };
+
+            const handleImport = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importedTemplates = JSON.parse(event.target.result);
+                        if (!Array.isArray(importedTemplates)) throw new Error('Invalid format');
+                        TemplateMgr.importTemplates(importedTemplates);
+                        UI.showAlert('Templates imported successfully!', 'success');
+                        renderAllTemplates();
+                        renderSendTemplates();
+                    } catch (error) {
+                        UI.showAlert('Failed to import templates. Please check the file format.', 'danger');
+                    }
+                };
+                reader.readAsText(file);
+
+                // Reset the input value to allow importing the same file again if needed
+                e.target.value = '';
+            };
+
+            const handleSendSearch = (e) => {
+                const searchTerm = e.target.value;
+                const allTemplates = TemplateMgr.getTemplates();
+                const filteredTemplates = allTemplates.filter(template => 
+                    template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    template.subject.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                UI.renderSendTemplates(filteredTemplates);
+            };
+
+            const handleSendTemplateClick = (e) => {
+                const target = e.target.closest('button');
+                if (!target) return;
+
+                const id = target.getAttribute('data-id');
+                if (target.classList.contains('send-template')) {
+                    const template = TemplateMgr.getTemplates().find(t => t.id === id);
+                    if (template) {
+                        sendEmail(template);
+                    }
+                }
+            };
+
+            const sendEmail = (template) => {
+                const recipients = template.recipients.join(',');
+                const subject = encodeURIComponent(template.subject);
+                const body = encodeURIComponent(template.body);
+                const mailtoLink = `mailto:${recipients}?subject=${subject}&body=${body}`;
+                window.location.href = mailtoLink;
+            };
+
+            const renderSendTemplates = () => {
+                const templates = TemplateMgr.getTemplates();
+                UI.renderSendTemplates(templates);
+            };
+
+            const init = () => {
+                setupEventListeners();
+                renderAllTemplates();
+                renderSendTemplates();
+            };
+
+            return { init };
+        })(TemplateManager, UIController);
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', AppController.init);
+    </script>
+</body>
+</html>

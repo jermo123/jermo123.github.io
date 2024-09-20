@@ -203,7 +203,8 @@
                     <h6 class="m-0 font-weight-bold text-primary">
                       <select id="template-select">
                         <option value="" selected disabled>Select a template</option>
-                        <option value="template1">Coin Order</option>
+                        <option value="template1">Coin Order - Driftwood</option>
+                        <option value="template6">Coin Order - Crown Isle</option>
                         <option value="template2">GFS Special Order</option>
                         <option value="template3">Order for Receipt Tape</option>
                         <option value="template5">Other DQs</option>
@@ -298,6 +299,97 @@ ${senderName}
     }
 </script>
   </div>
+
+<div id="template6-options" class="template-options">
+     <h2>Coin Order Email</h2>
+    <form id="coinOrderForm">
+        <label for="nickel">5¢</label>
+        <input type="text" id="nickel" placeholder="Rolls of nickels needed"><br>
+
+        <label for="dime">10¢</label>
+        <input type="text" id="dime" placeholder="Rolls of dimes needed"><br>
+
+        <label for="quarter">25¢</label>
+        <input type="text" id="quarter" placeholder="Rolls of quarters needed"><br>
+
+        <label for="loonie">$1</label>
+        <input type="text" id="loonie" placeholder="Rolls of loonies needed"><br>
+
+        <label for="toonie">$2</label>
+        <input type="text" id="toonie" placeholder="Rolls of toonies needed"><br>
+
+        <label for="sender-name">Your Name</label>
+        <input type="text" id="sender-name" placeholder="Enter your name"><br>
+
+        <button type="button" onclick="generateCoinEmail()">Generate Email</button>
+    </form>
+
+<script>
+    function generateCoinEmail() {
+        const nickel = parseInt(document.getElementById('nickel').value) || 0;
+        const dime = parseInt(document.getElementById('dime').value) || 0;
+        const quarter = parseInt(document.getElementById('quarter').value) || 0;
+        const loonie = parseInt(document.getElementById('loonie').value) || 0;
+        const toonie = parseInt(document.getElementById('toonie').value) || 0;
+        const senderName = document.getElementById('sender-name').value;
+
+        const nickelTotal = nickel * 2;
+        const dimeTotal = dime * 5;
+        const quarterTotal = quarter * 10;
+        const loonieTotal = loonie * 25;
+        const toonieTotal = toonie * 50;
+        const grandTotal = nickelTotal + dimeTotal + quarterTotal + loonieTotal + toonieTotal;
+
+        const currentDate = new Date().toLocaleDateString();
+
+        // Helper function to format the rows
+        function formatRow(coin, rolls, total) {
+            const coinLength = 15;
+            const rollsLength = 15;
+            const totalLength = 15;
+            const formattedCoin = coin.padEnd(coinLength);
+            const formattedRolls = rolls.toString().padEnd(rollsLength);
+            const formattedTotal = `$${total.toFixed(2)}`.padStart(totalLength);
+            return `${formattedCoin}${formattedRolls}${formattedTotal}`;
+        }
+
+        const emailBody = `
+Date: ${currentDate}
+
+Hey there,
+
+I would like to request the following coin rolls:
+
+Coin                   | Rolls Needed | Total Amount ($)
+--------------------------------------------------------
+${formatRow('5¢ (Nickels)', nickel, nickelTotal)}
+--------------------------------------------------------
+${formatRow('10¢ (Dimes)', dime, dimeTotal)}
+--------------------------------------------------------
+${formatRow('25¢ (Quarters)', quarter, quarterTotal)}
+--------------------------------------------------------
+${formatRow('$1 (Loonies)', loonie, loonieTotal)}
+--------------------------------------------------------
+${formatRow('$2 (Toonies)', toonie, toonieTotal)}
+
+Grand Total: ${' '.repeat(10)} $${grandTotal.toFixed(2)}
+
+Thank you,
+
+Dairy Queen Courtenay
+
+${senderName}
+        `;
+
+        const subject = 'Coin Order Request';
+        const recipients = 'Malaimagal.Sritharan@cibc.com;, Jody.MacFarlane@cibc.com; '; // List of recipients
+        const mailtoLink = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+
+        window.location.href = mailtoLink;
+    }
+</script>
+  </div>
+
 
     <div id="template2-options" class="template-options">
         <h2>GFS Special Order Email</h2>

@@ -222,13 +222,18 @@ dayOfMonth: 1,
 title: 'Inventory',
 description: ' '
 },
-            {
-                type: 'nthDayOfMonth',
-                nth: 1,
-                dayOfWeek: 1, // Monday
-                title: 'Staff Meeting',
-                description: 'First Monday of the month staff meeting.'
-            }
+{
+type: 'specificDate',
+date: '2024-10-28',
+title: 'New Items Launching',
+description: 'Honey garlic strips, frozen hot chocolate, caramel java chip blizzard'
+},
+{
+type: 'specificDate',
+date: '2024-11-25',
+title: 'New Blizzard',
+description: 'Peppermint hot cocoa'
+},
         ];
 
         // Function to check if a reminder is upcoming
@@ -387,6 +392,8 @@ description: ' '
                     </a>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="meeting.html"><i class="fas fa-comments"></i> Meeting Topics</a></li>
+                            <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Shopping List</a></li>
+
                 <!-- Store Management -->
                 <li class="nav-item">
                     <a class="nav-link" href="#storeManagement" data-bs-toggle="collapse" aria-expanded="false">
@@ -396,7 +403,6 @@ description: ' '
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdyCmdRINv3d4swrR7SIqqmsg4hLsDZvRGCHNtkPIX8qjKvEQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-wrench"></i> Equipment Logs</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-trash"></i> Garbage / Recycling</a></li>
-                            <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Shopping List</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSf1oiARDYknazjg3BIL9SuBxTkJ5vV91wwQ0iLUxoMfo4qXWQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-recycle"></i> Waste Reporting</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdFwJ37JReVOUQrmVnIE6p5I3sPRvoqb5X-7DRJgIrBV_kjMA/viewform?usp=sf_link" target="_blank"><i class="fas fa-exclamation-circle"></i> Complaint Entry</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank"><i class="fas fa-dollar-sign"></i> Price Sheet</a></li>
@@ -471,7 +477,6 @@ description: ' '
                                 <ul id="reminderList" class="list-unstyled">
                                     <!-- Reminders will be populated here -->
                                 </ul>
-                                <a href="addReminder.html" class="btn btn-primary">Add New Reminder</a>
                             </div>
                         </div>
                     </div>

@@ -2,8 +2,9 @@
 <html lang="en">
 
 <head>
-    <!-- Existing head content -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CVDQ Manager Dashboard</title>
     
     <!-- Fonts and Icons -->
@@ -21,7 +22,7 @@
         }
         #wrapper {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
         }
         /* Sidebar Styles */
         .sidebar {
@@ -117,19 +118,6 @@
             font-size: 0.9rem;
             color: #6c757d;
         }
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            #wrapper {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-            #content-wrapper {
-                margin-top: 0;
-            }
-        }
     </style>
     
     <!-- JavaScript Libraries -->
@@ -200,165 +188,6 @@
                 });
             }, 300000);
         });
-
-        // Reminder data
-        const reminders = [
-            // Examples of reminders
-{
-type: 'weekly',
-daysOfWeek: [1, 5],
-title: 'Garbage Pickup Day',
-description: '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link">Form</a>'
-},
-{
-type: 'weekly',
-daysOfWeek: [2],
-title: 'Recycling Pickup Day',
-description: '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link">Form</a>'
-},
-{
-type: 'monthly',
-dayOfMonth: 1,
-title: 'Inventory',
-description: ' '
-},
-            {
-                type: 'nthDayOfMonth',
-                nth: 1,
-                dayOfWeek: 1, // Monday
-                title: 'Staff Meeting',
-                description: 'First Monday of the month staff meeting.'
-            }
-        ];
-
-        // Function to check if a reminder is upcoming
-        function isReminderUpcoming(reminder, today, daysAhead) {
-            const upcomingDate = new Date(today);
-            upcomingDate.setDate(today.getDate() + daysAhead);
-
-            switch(reminder.type) {
-                case 'specificDate':
-                    let reminderDate = new Date(reminder.date);
-                    reminderDate.setHours(0,0,0,0);
-                    return reminderDate >= today && reminderDate <= upcomingDate;
-                case 'weekly':
-                    for(let i = 0; i <= daysAhead; i++) {
-                        let date = new Date(today);
-                        date.setDate(today.getDate() + i);
-                        let dayOfWeek = date.getDay(); // 0=Sunday
-                        if(reminder.daysOfWeek.includes(dayOfWeek)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                case 'monthly':
-                    for(let i = 0; i <= daysAhead; i++) {
-                        let date = new Date(today);
-                        date.setDate(today.getDate() + i);
-                        if(date.getDate() === reminder.dayOfMonth) {
-                            return true;
-                        }
-                    }
-                    return false;
-                case 'nthDayOfMonth':
-                    for(let i = 0; i <= daysAhead; i++) {
-                        let date = new Date(today);
-                        date.setDate(today.getDate() + i);
-                        if(isNthDayOfMonth(date, reminder.nth, reminder.dayOfWeek)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                default:
-                    return false;
-            }
-        }
-
-        // Function to check if a date is the nth occurrence of a day of week in the month
-        function isNthDayOfMonth(date, nth, dayOfWeek) {
-            if(date.getDay() !== dayOfWeek) return false;
-            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            let dayCount = 0;
-            for(let d = 1; d <= date.getDate(); d++) {
-                let currentDate = new Date(date.getFullYear(), date.getMonth(), d);
-                if(currentDate.getDay() === dayOfWeek) {
-                    dayCount++;
-                    if(currentDate.getDate() === date.getDate() && dayCount === nth) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        // Function to display upcoming reminders
-        function displayReminders() {
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const daysAhead = 7; // Show reminders for the next 7 days
-            const reminderList = document.getElementById('reminderList');
-            reminderList.innerHTML = '';
-
-            reminders.forEach(function(reminder) {
-                if(isReminderUpcoming(reminder, today, daysAhead)) {
-                    let li = document.createElement('li');
-                    let reminderDate = getReminderDate(reminder, today);
-                    let dateString = reminderDate ? reminderDate.toLocaleDateString() : '';
-                    li.innerHTML = '<strong>' + reminder.title + '</strong> (' + dateString + '): ' + reminder.description;
-                    reminderList.appendChild(li);
-                }
-            });
-        }
-
-        // Function to get the date of the upcoming reminder
-        function getReminderDate(reminder, today) {
-            switch(reminder.type) {
-                case 'specificDate':
-                    return new Date(reminder.date);
-                case 'weekly':
-                    for(let i = 0; i <= 7; i++) {
-                        let date = new Date(today);
-                        date.setDate(today.getDate() + i);
-                        if(reminder.daysOfWeek.includes(date.getDay())) {
-                            return date;
-                        }
-                    }
-                    return null;
-                case 'monthly':
-                    let date = new Date(today.getFullYear(), today.getMonth(), reminder.dayOfMonth);
-                    if(date < today) {
-                        date.setMonth(date.getMonth() + 1);
-                    }
-                    return date;
-                case 'nthDayOfMonth':
-                    let nthDate = getNthDayOfMonthDate(today, reminder.nth, reminder.dayOfWeek);
-                    if(nthDate < today) {
-                        nthDate = getNthDayOfMonthDate(new Date(today.getFullYear(), today.getMonth() + 1, 1), reminder.nth, reminder.dayOfWeek);
-                    }
-                    return nthDate;
-                default:
-                    return null;
-            }
-        }
-
-        // Function to get the date of the nth occurrence of a day of week in a month
-        function getNthDayOfMonthDate(startDate, nth, dayOfWeek) {
-            let date = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-            let count = 0;
-            while(date.getMonth() === startDate.getMonth()) {
-                if(date.getDay() === dayOfWeek) {
-                    count++;
-                    if(count === nth) {
-                        return date;
-                    }
-                }
-                date.setDate(date.getDate() + 1);
-            }
-            return null;
-        }
-
-        // Run displayReminders on page load
-        document.addEventListener('DOMContentLoaded', displayReminders);
     </script>
 </head>
 
@@ -374,19 +203,13 @@ description: ' '
                     </a>
                 </li>
                 <!-- Employee Management -->
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbyBJPhHge6kVOjpiOCCtuTfyRRR7dbmaeAuTPurjUbJkEG2MNPLQCLk3MCFAtBVSLPY/exec')">
-                        <i class="fas fa-address-book"></i> Business Directory
-                    </a>
+                            <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbyBJPhHge6kVOjpiOCCtuTfyRRR7dbmaeAuTPurjUbJkEG2MNPLQCLk3MCFAtBVSLPY/exec')"><i class="fas fa-address-book"></i> Business Directory</a></li>
+                            <li class="nav-item"><a class="nav-link" href="emailtemp.html"><i class="fas fa-envelope"></i> Email Templates</a></li>
+                            <li class="nav-item""><a class="nav-link" href="writetemp.html"><i class="fas fa-file-alt"></i> Write Up Templates</a></li>
+                            <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbzy2NIfKJCEeSugpPvbuRzqAf6rZ8K6fheL4PMMB3WA8uQDN6ibbquM7scfTtNwwgGg/exec')"><i class="fas fa-tools"></i> Troubleshooting Guides</a></li>
+                            <li class="nav-item"><a class="nav-link" href="meeting.html"><i class="fas fa-comments"></i> Meeting Topics</a></li>
+
                 </li>
-                <li class="nav-item"><a class="nav-link" href="emailtemp.html"><i class="fas fa-envelope"></i> Email Templates</a></li>
-                <li class="nav-item"><a class="nav-link" href="writetemp.html"><i class="fas fa-file-alt"></i> Write Up Templates</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbzy2NIfKJCEeSugpPvbuRzqAf6rZ8K6fheL4PMMB3WA8uQDN6ibbquM7scfTtNwwgGg/exec')">
-                        <i class="fas fa-tools"></i> Troubleshooting Guides
-                    </a>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="meeting.html"><i class="fas fa-comments"></i> Meeting Topics</a></li>
                 <!-- Store Management -->
                 <li class="nav-item">
                     <a class="nav-link" href="#storeManagement" data-bs-toggle="collapse" aria-expanded="false">
@@ -394,17 +217,20 @@ description: ' '
                     </a>
                     <div class="collapse" id="storeManagement">
                         <ul class="nav flex-column ms-3">
+
+
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdyCmdRINv3d4swrR7SIqqmsg4hLsDZvRGCHNtkPIX8qjKvEQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-wrench"></i> Equipment Logs</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-trash"></i> Garbage / Recycling</a></li>
                             <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Shopping List</a></li>
+
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSf1oiARDYknazjg3BIL9SuBxTkJ5vV91wwQ0iLUxoMfo4qXWQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-recycle"></i> Waste Reporting</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdFwJ37JReVOUQrmVnIE6p5I3sPRvoqb5X-7DRJgIrBV_kjMA/viewform?usp=sf_link" target="_blank"><i class="fas fa-exclamation-circle"></i> Complaint Entry</a></li>
                             <li class="nav-item"><a class="nav-link" href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank"><i class="fas fa-dollar-sign"></i> Price Sheet</a></li>
                         </ul>
                     </div>
-                </li>
-                <!-- Additional Links -->
-                <!-- You can add more navigation items here -->
+                
+                <!-- Portals and Tools -->
+                
             </ul>
         </nav>
         <!-- End of Sidebar -->
@@ -458,20 +284,6 @@ description: ' '
                                     <li><strong>Price Sheet:</strong> <a href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank">Vancouver Island DQ Price Sheet</a></li>
                                     <li><strong>Online Cake Orders:</strong> <a href="#" target="_blank">View Orders</a></li>
                                 </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Reminders Card -->
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                Reminders
-                            </div>
-                            <div class="card-body">
-                                <ul id="reminderList" class="list-unstyled">
-                                    <!-- Reminders will be populated here -->
-                                </ul>
-                                <a href="addReminder.html" class="btn btn-primary">Add New Reminder</a>
                             </div>
                         </div>
                     </div>
@@ -554,6 +366,7 @@ description: ' '
                             </div>
                         </div>
                     </div>
+<br><br><br><br><br><br>
                 </div>
             </div>
             <!-- End of Main Content -->
@@ -578,4 +391,3 @@ description: ' '
 </body>
 
 </html>
-

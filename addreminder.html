@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Reminder</title>
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f1f1f1;
+            border-radius: 0.5rem;
+            font-family: monospace;
+        }
+    </style>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script>
+        function showFields() {
+            var type = document.getElementById('type').value;
+            document.getElementById('specificDateFields').style.display = 'none';
+            document.getElementById('weeklyFields').style.display = 'none';
+            document.getElementById('monthlyFields').style.display = 'none';
+            document.getElementById('nthDayOfMonthFields').style.display = 'none';
+
+            if (type === 'specificDate') {
+                document.getElementById('specificDateFields').style.display = 'block';
+            } else if (type === 'weekly') {
+                document.getElementById('weeklyFields').style.display = 'block';
+            } else if (type === 'monthly') {
+                document.getElementById('monthlyFields').style.display = 'block';
+            } else if (type === 'nthDayOfMonth') {
+                document.getElementById('nthDayOfMonthFields').style.display = 'block';
+            }
+        }
+
+        function generateCode() {
+            var type = document.getElementById('type').value;
+            var title = document.getElementById('title').value;
+            var description = document.getElementById('description').value;
+            var code = '{\n    type: \'' + type + '\',\n';
+
+            if (type === 'specificDate') {
+                var date = document.getElementById('date').value;
+                code += '    date: \'' + date + '\',\n';
+            } else if (type === 'weekly') {
+                var daysOfWeek = [];
+                var checkboxes = document.querySelectorAll('input[name="daysOfWeek"]:checked');
+                checkboxes.forEach(function(checkbox) {
+                    daysOfWeek.push(checkbox.value);
+                });
+                code += '    daysOfWeek: [' + daysOfWeek.join(', ') + '],\n';
+            } else if (type === 'monthly') {
+                var dayOfMonth = document.getElementById('dayOfMonth').value;
+                code += '    dayOfMonth: ' + dayOfMonth + ',\n';
+            } else if (type === 'nthDayOfMonth') {
+                var nth = document.getElementById('nth').value;
+                var dayOfWeek = document.getElementById('nthDayOfWeek').value;
+                code += '    nth: ' + nth + ',\n';
+                code += '    dayOfWeek: ' + dayOfWeek + ',\n';
+            }
+
+            code += '    title: \'' + title + '\',\n';
+            code += '    description: \'' + description + '\'\n';
+            code += '},';
+
+            document.getElementById('result').innerText = code;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Reminder</h1>
+        <form onsubmit="generateCode(); return false;">
+            <div class="mb-3">
+                <label for="type" class="form-label">Reminder Type</label>
+                <select id="type" class="form-select" onchange="showFields()" required>
+                    <option value="">Select Type</option>
+                    <option value="specificDate">Specific Date</option>
+                    <option value="weekly">Specific Day(s) of the Week</option>
+                    <option value="monthly">Recurring Monthly</option>
+                    <option value="nthDayOfMonth">Nth Day of Month</option>
+                </select>
+            </div>
+
+            <!-- Specific Date Fields -->
+            <div id="specificDateFields" style="display:none;">
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" id="date" class="form-control">
+                </div>
+            </div>
+
+            <!-- Weekly Fields -->
+            <div id="weeklyFields" style="display:none;">
+                <label class="form-label">Days of the Week</label>
+                <div class="mb-3">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="0" id="sunday">
+                        <label class="form-check-label" for="sunday">Sunday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="1" id="monday">
+                        <label class="form-check-label" for="monday">Monday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="2" id="tuesday">
+                        <label class="form-check-label" for="tuesday">Tuesday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="3" id="wednesday">
+                        <label class="form-check-label" for="wednesday">Wednesday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="4" id="thursday">
+                        <label class="form-check-label" for="thursday">Thursday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="5" id="friday">
+                        <label class="form-check-label" for="friday">Friday</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="daysOfWeek" value="6" id="saturday">
+                        <label class="form-check-label" for="saturday">Saturday</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Fields -->
+            <div id="monthlyFields" style="display:none;">
+                <div class="mb-3">
+                    <label for="dayOfMonth" class="form-label">Day of Month (1-31)</label>
+                    <input type="number" id="dayOfMonth" class="form-control" min="1" max="31">
+                </div>
+            </div>
+
+            <!-- Nth Day of Month Fields -->
+            <div id="nthDayOfMonthFields" style="display:none;">
+                <div class="mb-3">
+                    <label for="nth" class="form-label">Nth Occurrence (e.g., 1 for first)</label>
+                    <input type="number" id="nth" class="form-control" min="1" max="5">
+                </div>
+                <div class="mb-3">
+                    <label for="nthDayOfWeek" class="form-label">Day of Week</label>
+                    <select id="nthDayOfWeek" class="form-select">
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Common Fields -->
+            <div class="mb-3">
+                <label for="title" class="form-label">Reminder Title</label>
+                <input type="text" id="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Reminder Description</label>
+                <textarea id="description" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Generate Code</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+</body>
+</html>

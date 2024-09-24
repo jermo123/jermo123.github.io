@@ -27,7 +27,6 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
-            table-layout: fixed; /* Fixed table layout */
             page-break-inside: avoid;
         }
         table, th, td {
@@ -37,15 +36,9 @@
         th, td {
             padding: 3px;
             text-align: left;
-            overflow: hidden; /* Hide overflow text */
-            white-space: nowrap; /* Prevent text wrapping */
         }
         th {
             font-weight: bold;
-        }
-        /* Set consistent column widths */
-        .aligned-table th, .aligned-table td {
-            width: 25%; /* Four columns */
         }
         input[type="file"] {
             margin-bottom: 10px;
@@ -277,8 +270,8 @@
             table.appendChild(tbody);
             reportDiv.appendChild(table);
 
-            // Function to create tables for other sections with alignment
-            function createAlignedSectionTable(sectionName) {
+            // Function to create tables for other sections
+            function createSectionTable(sectionName) {
                 if (sections[sectionName]) {
                     var heading = document.createElement('h2');
                     heading.innerText = sectionName;
@@ -289,39 +282,14 @@
                     if (sectionRows.length === 0) return;
 
                     var headers = sectionRows[1];
-
-                    // For 'Tenders' section, exclude 'Tips' and 'Payments' columns
-                    var excludeColumns = [];
-                    if (sectionName === 'Tenders') {
-                        excludeColumns = ['Tips', 'Payments'];
-                    }
-
-                    // Define the desired columns in order
-                    var desiredColumns = ['Name', 'Quantity', 'Total', 'Percent'];
-
-                    // Map to hold the indices of desired columns
-                    var columnIndices = [];
-
-                    // Build the table headers, excluding specified columns
                     var table = document.createElement('table');
-                    table.classList.add('aligned-table'); // Add class for consistent styling
                     var thead = document.createElement('thead');
                     var headerRow = document.createElement('tr');
 
-                    // Find indices of desired columns, accounting for excluded columns
-                    desiredColumns.forEach(function(columnName) {
-                        var index = headers.indexOf(columnName);
-                        if (index !== -1 && !excludeColumns.includes(columnName)) {
-                            columnIndices.push(index);
-                            var th = document.createElement('th');
-                            th.innerText = columnName;
-                            headerRow.appendChild(th);
-                        } else {
-                            // Column not found or excluded; add empty header
-                            columnIndices.push(-1);
-                            var th = document.createElement('th');
-                            headerRow.appendChild(th);
-                        }
+                    headers.forEach(function(header) {
+                        var th = document.createElement('th');
+                        th.innerText = header;
+                        headerRow.appendChild(th);
                     });
 
                     thead.appendChild(headerRow);
@@ -329,17 +297,11 @@
 
                     var tbody = document.createElement('tbody');
 
-                    // Process data rows, rearranging and excluding columns
                     sectionRows.slice(2).forEach(function(row) {
                         var tr = document.createElement('tr');
-                        columnIndices.forEach(function(index) {
+                        row.forEach(function(cell) {
                             var td = document.createElement('td');
-                            if (index !== -1) {
-                                var cell = row[index] ? row[index].replace(/,/g, '') : '';
-                                td.innerText = cell;
-                            } else {
-                                td.innerText = ''; // Empty cell if column not found
-                            }
+                            td.innerText = cell.replace(/,/g, '');
                             tr.appendChild(td);
                         });
                         tbody.appendChild(tr);
@@ -350,10 +312,49 @@
                 }
             }
 
-            // Generate aligned tables for specific sections
-            createAlignedSectionTable('Revenue Centers');
-            createAlignedSectionTable('Tenders');
-            createAlignedSectionTable('Taxes');
+            // Generate tables for specific sections
+            createSectionTable('Revenue Centers');
+            createSectionTable('Tenders');
+
+            // Special handling for 'Taxes' section
+            if (sections['Taxes']) {
+                var heading = document.createElement('h2');
+                heading.innerText = 'Taxes';
+                reportDiv.appendChild(heading);
+
+                var sectionRows = sections['Taxes'].filter(row => row.length > 0);
+
+                if (sectionRows.length > 0) {
+                    var headers = sectionRows[1];
+                    var table = document.createElement('table');
+                    var thead = document.createElement('thead');
+                    var headerRow = document.createElement('tr');
+
+                    headers.forEach(function(header) {
+                        var th = document.createElement('th');
+                        th.innerText = header;
+                        headerRow.appendChild(th);
+                    });
+
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    var tbody = document.createElement('tbody');
+
+                    sectionRows.slice(2).forEach(function(row) {
+                        var tr = document.createElement('tr');
+                        row.forEach(function(cell) {
+                            var td = document.createElement('td');
+                            td.innerText = cell.replace(/,/g, '');
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+
+                    table.appendChild(tbody);
+                    reportDiv.appendChild(table);
+                }
+            }
         }
     </script>
 </body>

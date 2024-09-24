@@ -7,76 +7,67 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 9pt;
-            margin: 0.5in; /* Adjusted margin */
+            margin: 0;
+            padding: 0;
         }
         h1 {
             text-align: center;
-            font-size: 14pt; /* Slightly larger for better readability */
+            margin: 10px 0;
+            font-size: 14pt;
         }
         h2 {
             font-size: 12pt;
-            margin-top: 16pt;
-            margin-bottom: 8pt;
+            margin: 10px 0 5px 0;
         }
         p {
-            margin: 6pt 0;
-            text-align: center; /* Center-align the date */
+            margin: 5px 0;
+            text-align: center;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 8pt;
-            table-layout: fixed; /* Fixed table layout */
+            margin-top: 5px;
+            page-break-inside: avoid;
         }
         table, th, td {
             border: 1px solid black;
-            font-size: 8pt; /* Slightly smaller font size */
+            font-size: 8pt;
         }
         th, td {
-            padding: 4px;
+            padding: 3px;
             text-align: left;
-            word-wrap: break-word; /* Break long words */
         }
         th {
             font-weight: bold;
         }
         input[type="file"] {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        /* Hide file input when printing */
+        /* Adjustments for printing */
         @media print {
+            body {
+                margin: 0.5cm;
+            }
             input[type="file"] {
                 display: none;
             }
-            body {
-                margin: 0.5in; /* Adjusted margin for printing */
-                font-size: 8pt; /* Slightly smaller font size for printing */
+            h1, h2 {
+                page-break-after: avoid;
             }
             table, th, td {
-                border: 1px solid black;
-                font-size: 7pt; /* Smaller font size for tables */
+                font-size: 7pt;
             }
-            h1 {
-                font-size: 12pt;
-            }
-            h2 {
-                font-size: 10pt;
-                margin-top: 12pt;
-                margin-bottom: 6pt;
+            table {
+                margin-top: 2px;
             }
             p {
-                font-size: 9pt;
-                margin: 4pt 0;
-            }
-            /* Prevent page breaks inside tables */
-            table {
-                page-break-inside: avoid;
+                margin: 2px 0;
             }
         }
     </style>
-    <!-- Include Papa Parse from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
     <h1>Sales Summary Report</h1>
@@ -88,22 +79,51 @@
         document.getElementById('csvFileInput').addEventListener('change', function(e) {
             var file = e.target.files[0];
             if (file) {
-                Papa.parse(file, {
-                    complete: function(results) {
-                        var data = results.data;
-                        processCSVData(data);
-                    },
-                    error: function(err) {
-                        console.error('Error parsing CSV:', err);
-                    }
-                });
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    var csvData = evt.target.result;
+                    processCSVData(csvData);
+                };
+                reader.readAsText(file);
             }
         });
 
         // Function to process the CSV data
-        function processCSVData(data) {
+        function processCSVData(csvData) {
+            var data = parseCSV(csvData);
             var sections = parseSections(data);
             generateReport(sections);
+        }
+
+        // Simple CSV parser function
+        function parseCSV(csvData) {
+            var lines = csvData.split(/\r\n|\n/);
+            var data = [];
+            lines.forEach(function(line) {
+                var cells = parseCSVLine(line);
+                data.push(cells);
+            });
+            return data;
+        }
+
+        // Function to parse a line of CSV, handling commas within quotes
+        function parseCSVLine(line) {
+            var result = [];
+            var inQuotes = false;
+            var field = '';
+            for (var i = 0; i < line.length; i++) {
+                var c = line[i];
+                if (c === '"') {
+                    inQuotes = !inQuotes;
+                } else if (c === ',' && !inQuotes) {
+                    result.push(field.trim());
+                    field = '';
+                } else {
+                    field += c;
+                }
+            }
+            result.push(field.trim());
+            return result;
         }
 
         // Function to parse sections from the data
@@ -154,37 +174,15 @@
 
             var salesSummarySection = sections['Sales Summary'];
 
-            // Extract location and date dynamically
-            var locationText = '';
-            var dateText = '';
+            // Extract location and preferred date
+            var locationText = salesSummarySection[0][1] || ''; // Corrected index to 1
+            var preferredDateText = salesSummarySection[1][1] || ''; // Corrected index to 1
 
-            // Search the first row for location
-            salesSummarySection[0].forEach(function(cell) {
-                if (cell && cell.match(/^\d+ - .+/)) {
-                    locationText = cell;
-                }
-            });
+            var dateLocation = preferredDateText + ' ' + locationText;
 
-            // Search the second row for date
-            salesSummarySection[1].forEach(function(cell) {
-                if (cell && cell.match(/^\w+,\s\w+\s\d{1,2},\s\d{4}$/)) {
-                    dateText = cell;
-                }
-            });
-
-            // If dateText is still empty, try to get the last non-empty cell
-            if (!dateText) {
-                for (var i = salesSummarySection[1].length - 1; i >= 0; i--) {
-                    if (salesSummarySection[1][i].trim() !== '') {
-                        dateText = salesSummarySection[1][i].trim();
-                        break;
-                    }
-                }
-            }
-
-            // Display date (you can include locationText if desired)
+            // Display preferred date and location
             var datePara = document.createElement('p');
-            datePara.innerText = dateText;
+            datePara.innerText = dateLocation;
             reportDiv.appendChild(datePara);
 
             // Remove the first two lines used above
@@ -218,6 +216,41 @@
                 keyValuePairs.push({ key: key, value: value });
             }
 
+            // Process 'Tenders' section to compute 'Delivery Total' and 'Mobile Total'
+            if (sections['Tenders']) {
+                var tendersSection = sections['Tenders'];
+                var deliveryTenders = ['Delivery', 'Delivery-DoorDash Integrated', 'Delivery-Uber Eats Integrated'];
+                var mobileTenders = ['OLO Visa', 'OLO Master Card'];
+                var deliveryTotal = 0;
+                var mobileTotal = 0;
+
+                var headers = tendersSection[1];
+                var totalIndex = headers.indexOf('Total');
+
+                if (totalIndex !== -1) {
+                    tendersSection.slice(2).forEach(function(row) {
+                        var tenderName = row[0];
+                        var totalCell = row[totalIndex];
+                        if (totalCell) {
+                            // Remove commas and dollar signs, convert to number
+                            var totalValue = parseFloat(totalCell.replace(/[^0-9.-]+/g,""));
+                            if (!isNaN(totalValue)) {
+                                if (deliveryTenders.includes(tenderName)) {
+                                    deliveryTotal += totalValue;
+                                }
+                                if (mobileTenders.includes(tenderName)) {
+                                    mobileTotal += totalValue;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Add 'Delivery Total' and 'Mobile Total' to the keyValuePairs
+                keyValuePairs.push({ key: 'Delivery Total', value: '$' + deliveryTotal.toFixed(2) });
+                keyValuePairs.push({ key: 'Mobile Total', value: '$' + mobileTotal.toFixed(2) });
+            }
+
             // Create table with four columns
             var numColumns = 4;
             var table = document.createElement('table');
@@ -228,7 +261,7 @@
                     if (i + j < keyValuePairs.length) {
                         var pair = keyValuePairs[i + j];
                         var td = document.createElement('td');
-                        td.innerText = pair.key + ': ' + pair.value;
+                        td.innerText = pair.key + (pair.value !== '' ? ': ' + pair.value : '');
                         tr.appendChild(td);
                     }
                 }
@@ -265,7 +298,6 @@
                     var tbody = document.createElement('tbody');
 
                     sectionRows.slice(2).forEach(function(row) {
-                        if (row.includes('Total')) return;
                         var tr = document.createElement('tr');
                         row.forEach(function(cell) {
                             var td = document.createElement('td');
@@ -310,15 +342,13 @@
                     var tbody = document.createElement('tbody');
 
                     sectionRows.slice(2).forEach(function(row) {
-                        if (['GST Tax', 'PST Tax'].includes(row[0])) {
-                            var tr = document.createElement('tr');
-                            row.forEach(function(cell) {
-                                var td = document.createElement('td');
-                                td.innerText = cell.replace(/,/g, '');
-                                tr.appendChild(td);
-                            });
-                            tbody.appendChild(tr);
-                        }
+                        var tr = document.createElement('tr');
+                        row.forEach(function(cell) {
+                            var td = document.createElement('td');
+                            td.innerText = cell.replace(/,/g, '');
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
                     });
 
                     table.appendChild(tbody);
@@ -329,4 +359,3 @@
     </script>
 </body>
 </html>
-

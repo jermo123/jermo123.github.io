@@ -7,35 +7,65 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 9pt;
+            margin: 0;
+            padding: 0;
         }
         h1 {
             text-align: center;
+            margin: 10px 0;
+            font-size: 14pt;
         }
         h2 {
             font-size: 12pt;
-            margin-top: 20px;
+            margin: 10px 0 5px 0;
         }
         p {
-            margin: 6pt 0;
+            margin: 5px 0;
+            text-align: center;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 5px;
+            page-break-inside: avoid;
         }
         table, th, td {
             border: 1px solid black;
-            font-size: 9pt;
+            font-size: 8pt;
         }
         th, td {
-            padding: 5px;
+            padding: 3px;
             text-align: left;
         }
         th {
             font-weight: bold;
         }
         input[type="file"] {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Adjustments for printing */
+        @media print {
+            body {
+                margin: 0.5cm;
+            }
+            input[type="file"] {
+                display: none;
+            }
+            h1, h2 {
+                page-break-after: avoid;
+            }
+            table, th, td {
+                font-size: 7pt;
+            }
+            table {
+                margin-top: 2px;
+            }
+            p {
+                margin: 2px 0;
+            }
         }
     </style>
 </head>
@@ -144,14 +174,14 @@
 
             var salesSummarySection = sections['Sales Summary'];
 
-            // Extract location and date
-            var locationText = salesSummarySection[0][1] || '';
-            var dateText = salesSummarySection[1][0] || '';
-            var dateLocation = dateText + ' ' + locationText;
+            // Extract location and preferred date
+            var locationText = salesSummarySection[0][1] || ''; // Corrected index to 1
+            var preferredDateText = salesSummarySection[1][1] || ''; // Corrected index to 1
 
-            // Display date and location
+            var dateLocation = preferredDateText + ' ' + locationText;
+
+            // Display preferred date and location
             var datePara = document.createElement('p');
-            datePara.style.textAlign = 'center';
             datePara.innerText = dateLocation;
             reportDiv.appendChild(datePara);
 
@@ -186,6 +216,41 @@
                 keyValuePairs.push({ key: key, value: value });
             }
 
+            // Process 'Tenders' section to compute 'Delivery Total' and 'Mobile Total'
+            if (sections['Tenders']) {
+                var tendersSection = sections['Tenders'];
+                var deliveryTenders = ['Delivery', 'Delivery-DoorDash Integrated', 'Delivery-Uber Eats Integrated'];
+                var mobileTenders = ['OLO Visa', 'OLO Master Card'];
+                var deliveryTotal = 0;
+                var mobileTotal = 0;
+
+                var headers = tendersSection[1];
+                var totalIndex = headers.indexOf('Total');
+
+                if (totalIndex !== -1) {
+                    tendersSection.slice(2).forEach(function(row) {
+                        var tenderName = row[0];
+                        var totalCell = row[totalIndex];
+                        if (totalCell) {
+                            // Remove commas and dollar signs, convert to number
+                            var totalValue = parseFloat(totalCell.replace(/[^0-9.-]+/g,""));
+                            if (!isNaN(totalValue)) {
+                                if (deliveryTenders.includes(tenderName)) {
+                                    deliveryTotal += totalValue;
+                                }
+                                if (mobileTenders.includes(tenderName)) {
+                                    mobileTotal += totalValue;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Add 'Delivery Total' and 'Mobile Total' to the keyValuePairs
+                keyValuePairs.push({ key: 'Delivery Total', value: '$' + deliveryTotal.toFixed(2) });
+                keyValuePairs.push({ key: 'Mobile Total', value: '$' + mobileTotal.toFixed(2) });
+            }
+
             // Create table with four columns
             var numColumns = 4;
             var table = document.createElement('table');
@@ -196,7 +261,7 @@
                     if (i + j < keyValuePairs.length) {
                         var pair = keyValuePairs[i + j];
                         var td = document.createElement('td');
-                        td.innerText = pair.key + ': ' + pair.value;
+                        td.innerText = pair.key + (pair.value !== '' ? ': ' + pair.value : '');
                         tr.appendChild(td);
                     }
                 }
@@ -233,7 +298,6 @@
                     var tbody = document.createElement('tbody');
 
                     sectionRows.slice(2).forEach(function(row) {
-                        if (row.includes('Total')) return;
                         var tr = document.createElement('tr');
                         row.forEach(function(cell) {
                             var td = document.createElement('td');
@@ -278,15 +342,13 @@
                     var tbody = document.createElement('tbody');
 
                     sectionRows.slice(2).forEach(function(row) {
-                        if (['GST Tax', 'PST Tax'].includes(row[0])) {
-                            var tr = document.createElement('tr');
-                            row.forEach(function(cell) {
-                                var td = document.createElement('td');
-                                td.innerText = cell.replace(/,/g, '');
-                                tr.appendChild(td);
-                            });
-                            tbody.appendChild(tr);
-                        }
+                        var tr = document.createElement('tr');
+                        row.forEach(function(cell) {
+                            var td = document.createElement('td');
+                            td.innerText = cell.replace(/,/g, '');
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
                     });
 
                     table.appendChild(tbody);

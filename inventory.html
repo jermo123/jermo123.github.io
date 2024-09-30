@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Inventory Report</title>
+    <style>
+        /* Styles for the report */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        .upload-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .report {
+            display: none;
+        }
+        .report table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .report th, .report td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .report th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .summary-section {
+            margin-bottom: 40px;
+        }
+        @media print {
+            .upload-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Restaurant Inventory Report</h1>
+
+    <div class="upload-section">
+        <input type="file" id="file-input" accept=".xlsx, .xls" />
+    </div>
+
+    <div class="report" id="report">
+        <h2 id="worksheet-name"></h2>
+        <p><strong>Created Date:</strong> <span id="created-date"></span></p>
+        <p><strong>Last Modified:</strong> <span id="last-modified"></span></p>
+
+        <div class="summary-section">
+            <h3>Storage Area Summary</h3>
+            <table id="storage-summary-table">
+                <thead>
+                    <tr>
+                        <th>Storage Area</th>
+                        <th>$ Value</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="summary-section">
+            <h3>Category Summary (Top 5)</h3>
+            <table id="category-summary-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>$ Value</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="summary-section">
+            <h3>Inventory Details</h3>
+            <table id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product #</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Storage Area</th>
+                        <th>Vendor</th>
+                        <th>Primary UOM</th>
+                        <th>Primary Qty</th>
+                        <th>Secondary UOM</th>
+                        <th>Secondary Qty</th>
+                        <th>$ Value</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Additional Section: Low Stock Items -->
+        <div class="summary-section">
+            <h3>Low Stock Items</h3>
+            <table id="low-stock-table">
+                <thead>
+                    <tr>
+                        <th>Product #</th>
+                        <th>Description</th>
+                        <th>Current Qty</th>
+                        <th>Reorder Level</th>
+                        <th>Vendor</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Include SheetJS library -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <script>
+        document.getElementById('file-input').addEventListener('change', handleFile, false);
+
+        function handleFile(e) {
+            var files = e.target.files, f = files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {type: 'binary'});
+
+                // Process "Count Info" sheet
+                var countInfoSheet = workbook.Sheets['Count Info'];
+                var worksheetName = XLSX.utils.sheet_to_json(countInfoSheet, {header: 1})[0][1];
+                var createdDate = XLSX.utils.sheet_to_json(countInfoSheet, {header: 1})[1][1];
+                var lastModified = XLSX.utils.sheet_to_json(countInfoSheet, {header: 1})[2][1];
+
+                document.getElementById('worksheet-name').textContent = worksheetName;
+                document.getElementById('created-date').textContent = createdDate;
+                document.getElementById('last-modified').textContent = lastModified;
+
+                // Process "Storage Area Summary" sheet
+                var storageSummarySheet = workbook.Sheets['Storage Area Summary'];
+                var storageData = XLSX.utils.sheet_to_json(storageSummarySheet);
+                var storageTableBody = document.getElementById('storage-summary-table').getElementsByTagName('tbody')[0];
+                storageData.forEach(function (row) {
+                    var tr = document.createElement('tr');
+                    var tdArea = document.createElement('td');
+                    tdArea.textContent = row['Storage Area'];
+                    var tdValue = document.createElement('td');
+                    tdValue.textContent = row['$ Value'];
+                    tr.appendChild(tdArea);
+                    tr.appendChild(tdValue);
+                    storageTableBody.appendChild(tr);
+                });
+
+                // Process "Category Summary" sheet (show top 5)
+                var categorySummarySheet = workbook.Sheets['Category Summary'];
+                var categoryData = XLSX.utils.sheet_to_json(categorySummarySheet);
+                categoryData.sort(function(a, b) {
+                    return b['$ Value'] - a['$ Value'];
+                });
+                var categoryTableBody = document.getElementById('category-summary-table').getElementsByTagName('tbody')[0];
+                categoryData.slice(0, 5).forEach(function (row) {
+                    var tr = document.createElement('tr');
+                    var tdCategory = document.createElement('td');
+                    tdCategory.textContent = row['Category'];
+                    var tdValue = document.createElement('td');
+                    tdValue.textContent = row['$ Value'];
+                    tr.appendChild(tdCategory);
+                    tr.appendChild(tdValue);
+                    categoryTableBody.appendChild(tr);
+                });
+
+                // Process "Inventory Values" sheet
+                var inventorySheet = workbook.Sheets['Inventory Values'];
+                var inventoryData = XLSX.utils.sheet_to_json(inventorySheet);
+                var inventoryTableBody = document.getElementById('inventory-table').getElementsByTagName('tbody')[0];
+                inventoryData.forEach(function (row) {
+                    var tr = document.createElement('tr');
+                    ['Product #', 'Description', 'Category', 'Storage Area', 'Vendor', 'Primary UOM', 'Primary Qty', 'Secondary UOM', 'Secondary Qty', '$ Value'].forEach(function (field) {
+                        var td = document.createElement('td');
+                        td.textContent = row[field];
+                        tr.appendChild(td);
+                    });
+                    inventoryTableBody.appendChild(tr);
+                });
+
+                // Additional Feature: Display Low Stock Items (Assuming Reorder Level is provided)
+                // For demonstration, we'll assume items with 'Primary Qty' less than 5 are low stock
+                var lowStockTableBody = document.getElementById('low-stock-table').getElementsByTagName('tbody')[0];
+                inventoryData.forEach(function (row) {
+                    if (row['Primary Qty'] < 5) {
+                        var tr = document.createElement('tr');
+                        var reorderLevel = 5; // Assuming reorder level is 5
+                        ['Product #', 'Description'].forEach(function (field) {
+                            var td = document.createElement('td');
+                            td.textContent = row[field];
+                            tr.appendChild(td);
+                        });
+                        var tdCurrentQty = document.createElement('td');
+                        tdCurrentQty.textContent = row['Primary Qty'];
+                        tr.appendChild(tdCurrentQty);
+                        var tdReorderLevel = document.createElement('td');
+                        tdReorderLevel.textContent = reorderLevel;
+                        tr.appendChild(tdReorderLevel);
+                        var tdVendor = document.createElement('td');
+                        tdVendor.textContent = row['Vendor'];
+                        tr.appendChild(tdVendor);
+
+                        lowStockTableBody.appendChild(tr);
+                    }
+                });
+
+                // Show the report
+                document.getElementById('report').style.display = 'block';
+            };
+            reader.readAsBinaryString(f);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Topping Levels Log Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ffffff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            max-width: 800px; /* Ensures table doesn't exceed page width */
+            margin: 0 auto; /* Centers the table */
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px; /* Reduced padding to save space */
+            text-align: center;
+            font-size: 14px; /* Ensures text is legible */
+        }
+        th {
+            background-color: #dddddd;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px; /* Matches font size of table text */
+            box-sizing: border-box;
+        }
+        .add-button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #00539f;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .add-button:hover {
+            background-color: #e31837;
+        }
+        /* Print-friendly Styles */
+        @media print {
+            .add-button {
+                display: none;
+            }
+            body {
+                margin: 10mm;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+    <script>
+        function addRow() {
+            var table = document.getElementById("toppingTable");
+            var row = table.insertRow(-1);
+
+            var cell1 = row.insertCell(0);
+            var toppingInput = document.createElement("input");
+            toppingInput.type = "text";
+            toppingInput.placeholder = "Topping Name";
+            cell1.appendChild(toppingInput);
+
+            var cell2 = row.insertCell(1);
+            var counterInput = document.createElement("input");
+            counterInput.type = "text";
+            cell2.appendChild(counterInput);
+
+            var cell3 = row.insertCell(2);
+            var dtInput = document.createElement("input");
+            dtInput.type = "text";
+            cell3.appendChild(dtInput);
+        }
+    </script>
+</head>
+<body>
+    <h1>Topping Levels Log Sheet</h1>
+    <table id="toppingTable">
+        <thead>
+            <tr>
+                <th>Toppings</th>
+                <th>Counter</th>
+                <th>DT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Oreo</td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <td>Skor</td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <td>Cookie Dough</td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            <!-- Additional toppings can be added -->
+        </tbody>
+    </table>
+    <button class="add-button" onclick="addRow()">Add Topping</button>
+</body>
+</html>

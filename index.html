@@ -2,57 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>mobes</title>
+    <title>Mobes.ca - The Creative Universe of Jeromy Mobley</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Exploring the cosmos of creativity - Discover the art, tech, and stories of Jeromy on Mobes.ca">
+    <meta name="keywords" content="Jeromy, Art, Web Design, Chessitron, Food, Creative, Mobes, Space, Universe">
+    <!-- External CSS -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Added 'Orbitron' font for a futuristic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="center-symbol">mobes</div>
-        <div class="tabs">
-            <button class="tab-link" data-modal="about">About</button>
-            <button class="tab-link" data-modal="projects">Projects</button>
-            <button class="tab-link" data-modal="contact">Contact</button>
-            <button class="tab-link" data-modal="blog">Blog</button>
+    <!-- Landing Page -->
+    <div id="landing-page">
+        <div class="landing-content">
+            <div class="planet">
+                <img src="images/planet.png" alt="Mobes.ca Planet Logo" class="planet-logo">
+                <div class="orbit">
+                    <a href="#" data-section="art" class="orbit-item">Art</a>
+                    <a href="#" data-section="web" class="orbit-item">Web Dev</a>
+                    <a href="#" data-section="chess" class="orbit-item">Chessitron</a>
+                    <a href="#" data-section="food" class="orbit-item">Food</a>
+                    <a href="#" data-section="contact" class="orbit-item">Contact</a>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Modal Templates -->
-    <div id="about" class="modal">s
-        <div class="modal-content">
-            <span class="close-button" data-close="about">&times;</span>
-            <h2>About Me</h2>
-            <p>hi, i'm jeromy. i’m a creator who loves blending art, tech, and storytelling. whether it's coding apps, writing guides, or making space for my art, i'm always exploring new ideas. outside of work, you'll find me enjoying sci-fi, painting, or working on personal projects. i'm passionate about crafting unique experiences and sharing what i learn along the way.</p>
+    <!-- Popup Content -->
+    <div id="popup-content" class="hidden">
+        <div class="popup-inner">
+            <button id="close-popup">&times;</button>
+            <!-- Content will be loaded here -->
+            <div id="content"></div>
         </div>
     </div>
-    <div id="projects" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="projects">&times;</span>
-            <h2>Projects</h2>
-            <p>oil painting</p>
-            <p>web design</p>
-            <p>graphic design</p>
-            <p>chessitron</p>
-            <p>food</p>
-            <p>guides</p>
-
-
-        </div>
-    </div>
-    <div id="contact" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="contact">&times;</span>
-            <h2>Contact</h2>
-            <p>...</p>
-        </div>
-    </div>
-    <div id="blog" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="blog">&times;</span>
-            <h2>Blog</h2>
-            <p>...</p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <!-- External JavaScript -->
+    <script src="scripts.js"></script>
 </body>
 </html>

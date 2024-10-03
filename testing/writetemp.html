@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Up Templates - CVDQ Manager Dashboard</title>
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+        }
+
+        /* Sidebar Styles (Consistent with Dashboard) */
+        .sidebar {
+            width: 250px;
+            background-color: #4e73df;
+            color: #fff;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            height: 100vh;
+            position: fixed;
+        }
+
+        .sidebar .sidebar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: #2e59d9;
+        }
+
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #1d2c8a;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+        }
+
+        /* Content Styles */
+        #content-wrapper {
+            margin-left: 250px;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Topbar Styles */
+        .topbar {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #4e73df;
+            color: #fff;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #000;
+            padding: 20px;
+            background: #fff;
+            z-index: 1000;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-close {
+            cursor: pointer;
+            float: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            #content-wrapper {
+                margin-left: 0;
+            }
+        }
+
+        /* Button Styles */
+        .action-buttons {
+            margin-top: 1rem;
+        }
+
+        .action-buttons button {
+            margin-right: 0.5rem;
+        }
+    </style>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script>
+        // Function to open folders (Requires Backend Support)
+        function openFolder(path) {
+            if (window.pywebview && window.pywebview.api) {
+                window.pywebview.api.open_folder(path);
+            } else {
+                alert('Folder access is not supported in this environment.');
+            }
+        }
+
+        // Function to open popup
+        function showPopup(content) {
+            document.getElementById('popup-content').innerText = content;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        // Function to close popup
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Function to copy content to clipboard
+        function copyToClipboard() {
+            const content = document.getElementById('popup-content').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Write-up copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy text: ', err);
+            });
+        }
+
+        // Function to download content as PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const content = document.getElementById('popup-content').innerText;
+            doc.text(content, 10, 10);
+            doc.save('write-up.pdf');
+        }
+
+        // Function to print content
+        function printContent() {
+            const content = document.getElementById('popup-content').innerText;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<pre>' + content + '</pre>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Function to handle template selection and display
+        function handleTemplateSelection() {
+            const selectedTemplate = document.getElementById('template-select').value;
+            const templateOptions = document.querySelectorAll('.template-options');
+            templateOptions.forEach(el => el.style.display = 'none');
+            if (selectedTemplate) {
+                document.getElementById(`${selectedTemplate}-options`).style.display = 'block';
+            }
+        }
+
+        // Event Listener for Template Selection
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('template-select').addEventListener('change', handleTemplateSelection);
+        });
+    </script>
+</head>
+
+<body>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar d-flex flex-column">
+            <div class="sidebar-brand">
+                <img src="img/logo.png" alt="Logo" width="75" height="50">
+            </div>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="emailtemp.html">
+                        <i class="fas fa-envelope"></i> Email Templates
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="writetemp.html">
+                        <i class="fas fa-file-alt"></i> Write Up Templates
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbweeKEF5_cJBT0V516R9ETytpNBRcLCMsyJZ7wT8a10U9civGjLemcZ3OlW3YpKvZI4/exec')">
+                        <i class="fas fa-address-book"></i> Business Directory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbxQkF1yCVMOWag_-q_j2QqkTUqPFfmbJtncEEOQf98E3Z6HiqI_4Clwzsfju9ULW4HD/exec')">
+                        <i class="fas fa-tools"></i> Troubleshooting Guides
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="shopping.html">
+                        <i class="fas fa-shopping-cart"></i> Shopping List
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="meeting.html">
+                        <i class="fas fa-comments"></i> Meeting Topics
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper">
+            <!-- Topbar -->
+            <nav class="topbar">
+                <div id="datetime" class="fw-bold"></div>
+                <button class="btn btn-primary d-md-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Main Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <h1 class="h3 mb-4 text-gray-800">Write Up Templates</h1>
+
+                <!-- Template Selection Card -->
+                <div class="card">
+                    <div class="card-header">
+                        Select Issue Type
+                    </div>
+                    <div class="card-body">
+                        <select id="template-select" class="form-select" aria-label="Select Issue Type">
+                            <option value="" selected disabled>Type of issue</option>
+                            <option value="template1">Excessive Absenteeism</option>
+                            <option value="template2">Tardiness</option>
+                            <option value="template3">Insubordination</option>
+                            <option value="template4">Poor Performance</option>
+                            <option value="template5">Violation of Company Policies</option>
+                            <option value="template6">Unprofessional Behavior</option>
+                            <option value="template7">Harassment/Bullying</option>
+                            <option value="template8">Dress Code Violations</option>
+                            <option value="template9">Booking Time Off</option>
+                            <option value="template10">Unsafe Work Practices</option>
+                            <option value="template11">Conflict Resolution</option>
+                            <option value="template12">Lack of Teamwork</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Template Forms -->
+                <!-- Example Template: Excessive Absenteeism -->
+                <div id="template1-options" class="template-options">
+                    <div class="card">
+                        <div class="card-header">
+                            Excessive Absenteeism
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="tone-select1" class="form-label">Tone:</label>
+                                    <select id="tone-select1" class="form-select" aria-label="Select Tone">
+                                        <option value="" selected disabled>Select a tone for the letter</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="formal">Formal</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="employee-name1" class="form-label">Name of Employee:</label>
+                                    <input type="text" id="employee-name1" class="form-control" placeholder="Billy" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="date1" class="form-label">Date:</label>
+                                    <input type="date" id="date1" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="time-period1" class="form-label">Time Period:</label>
+                                    <input type="text" id="time-period1" class="form-control" placeholder="January through August" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num-absences1" class="form-label">Number of Absences:</label>
+                                    <input type="number" id="num-absences1" class="form-control" placeholder="# of absences" required>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="generateWriteUp('template1')">Generate Write Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repeat similar structure for other templates -->
+                <!-- Template 2: Tardiness -->
+                <div id="template2-options" class="template-options">
+                    <div class="card">
+                        <div class="card-header">
+                            Tardiness
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="tone-select2" class="form-label">Tone:</label>
+                                    <select id="tone-select2" class="form-select" aria-label="Select Tone">
+                                        <option value="" selected disabled>Select a tone for the letter</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="formal">Formal</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="name2" class="form-label">Name of Employee:</label>
+                                    <input type="text" id="name2" class="form-control" placeholder="Steve" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="date2" class="form-label">Date:</label>
+                                    <input type="date" id="date2" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="time-period2" class="form-label">Time Period:</label>
+                                    <input type="text" id="time-period2" class="form-control" placeholder="January through August" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="num-occasions2" class="form-label">Number of Occasions:</label>
+                                    <input type="number" id="num-occasions2" class="form-control" placeholder="# of occasions" required>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="generateWriteUp('template2')">Generate Write Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Continue adding all other templates similarly -->
+                <!-- Example for Template 3: Insubordination -->
+                <div id="template3-options" class="template-options">
+                    <div class="card">
+                        <div class="card-header">
+                            Insubordination
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="tone-select3" class="form-label">Tone:</label>
+                                    <select id="tone-select3" class="form-select" aria-label="Select Tone">
+                                        <option value="" selected disabled>Select a tone for the letter</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="formal">Formal</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="namei" class="form-label">Name of Employee:</label>
+                                    <input type="text" id="namei" class="form-control" placeholder="Emily" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="datei" class="form-label">Date:</label>
+                                    <input type="date" id="datei" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="inst" class="form-label">Specific Instances or Behavior:</label>
+                                    <input type="text" id="inst" class="form-control" placeholder="not following instructions." required>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="generateWriteUp('template3')">Generate Write Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add other templates (template4 to template12) similarly -->
+
+                <!-- Popup for Displaying Generated Write Up -->
+                <div id="popup" class="popup">
+                    <span class="popup-close" onclick="closePopup()">&times;</span>
+                    <pre id="popup-content"></pre>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy</button>
+                        <button class="btn btn-info" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                        <button class="btn btn-secondary" onclick="printContent()"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white mt-auto">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>&copy; 2024 Dairy Queen Courtenay Managers Dashboard. All rights reserved.</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="logoutModalLabel" class="modal-title">Ready to Leave?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-K+ctZ9rMY6C6F1QFVh1LYvXvzO1zU3zWbC7uFV0iKlYK4N8y5j/Z0L7GwffivlgK3nDbdFxWngGLUgrnQhXMZg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" integrity="sha512-6p5je8PdRv7QitG8t0AXcwBRvK9O+xv0h9dxntZkPfM6K9FeS0AXPCrQ+0qZzPCldRh4pCsuXGftzZkQbqkW5g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-6uBuXxCAjDQw3cR0iGJJ3tJ0PKDoLHRBlyJvlf2IovK13c2Mpv6nOK9lrCHgkjm+9C5AGMZScsEJ2Svrcsy2JQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Custom Scripts for Write Up Generation -->
+    <script>
+        function generateWriteUp(templateId) {
+            let content = '';
+            const tone = document.getElementById(`tone-select${templateId.slice(-1)}`).value;
+            const name = document.getElementById(`employee-name${templateId.slice(-1)}`) ? document.getElementById(`employee-name${templateId.slice(-1)}`).value :
+                document.getElementById(`name${templateId.slice(-1)}`).value;
+            const date = document.getElementById(`date${templateId.slice(-1)}`).value;
+            const period = document.getElementById(`time-period${templateId.slice(-1)}`) ? document.getElementById(`time-period${templateId.slice(-1)}`).value :
+                document.getElementById(`time-period${templateId.slice(-1)}`).value;
+            const num = document.getElementById(`num-absences${templateId.slice(-1)}`) ? document.getElementById(`num-absences${templateId.slice(-1)}`).value :
+                document.getElementById(`num-occasions${templateId.slice(-1)}`).value;
+
+            switch (templateId) {
+                case 'template1':
+                    // Excessive Absenteeism
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Attendance Concern
+
+Hey ${name},
+
+I hope you’re doing well. I wanted to touch base about your recent attendance. We’ve noticed that you’ve had ${num} absences over the past ${period}, and it’s starting to impact the team’s workflow.
+
+We understand that things come up, but consistent attendance is crucial for us to keep everything running smoothly. Please let us know if there’s something we can do to help or if you’re having any issues.
+
+We need you to make an effort to improve your attendance going forward. If this continues, we might need to discuss further steps.
+
+Thanks for understanding!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Excessive Absenteeism
+
+Dear ${name},
+
+I am writing to formally address a concern regarding your recent attendance at Dairy Queen Courtenay. Specifically, there have been ${num} instances of absenteeism over the past ${period}, which is affecting the efficiency and productivity of our team.
+
+Regular attendance is essential to ensure smooth operations and adequate staffing levels. Please provide any explanations or documentation regarding these absences, and let us know if there are any underlying issues we should be aware of.
+
+It is important that you improve your attendance moving forward. Failure to do so may result in further disciplinary actions.
+
+Thank you for your prompt attention to this matter.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template2':
+                    // Tardiness
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Time Management Concern
+
+Hey ${name},
+
+Just wanted to have a quick chat about your recent punctuality. We’ve noticed you’ve been arriving late on ${num} occasions over the past ${period}. It’s important for us to start on time so we can keep everything running smoothly.
+
+If there’s something causing these delays or if you’re facing any issues, let us know. We’re here to help if we can. We just need you to make an effort to be on time from now on.
+
+Thanks for your attention to this!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Concern Regarding Tardiness
+
+Dear ${name},
+
+I am writing to formally address a concern regarding your punctuality at Dairy Queen Courtenay. There have been ${num} instances of tardiness over the past ${period}, which is affecting the team’s ability to start shifts and complete tasks efficiently.
+
+Timeliness is crucial to maintaining smooth operations and ensuring that all team members can fulfill their roles effectively. Please provide any information regarding the reasons for these delays and any steps you are taking to address them.
+
+It is imperative that you adhere to your scheduled start times moving forward. Continued tardiness may result in further disciplinary actions.
+
+Thank you for your cooperation.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template3':
+                    // Insubordination
+                    const inst = document.getElementById('inst').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Concern Regarding Insubordination
+
+Hey ${name},
+
+I need to talk to you about some recent behavior that has been concerning. We’ve noticed that you’ve been ${inst} recently. It's important for us to maintain a positive and productive work environment, and this behavior is affecting the team.
+
+If there’s anything you’d like to discuss or if you need support, please come see me directly. We need you to address this issue and work towards improving your behavior.
+
+Thanks for your attention to this matter!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Formal Concern Regarding Insubordination
+
+Dear ${name},
+
+I am writing to formally address a concern regarding your recent conduct at Dairy Queen Courtenay. Specifically, there have been instances where you were observed ${inst}. Such behavior is contrary to our expectations and standards for maintaining a professional and cooperative work environment.
+
+It is important that you address this issue promptly and make the necessary adjustments to align with company expectations. Failure to do so may result in further disciplinary actions.
+
+Thank you for your immediate attention to this matter.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template4':
+                    // Poor Performance
+                    const aspects = document.getElementById('aspects').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Performance Review
+
+Hey ${name},
+
+I wanted to touch base about your recent performance at Dairy Queen Courtenay. We’ve noticed that there have been some issues with ${aspects}, and it’s affecting the team’s overall efficiency.
+
+We understand that everyone has off days, but we need to address this to make sure we’re all on the same page. If there’s anything you’re struggling with or if you need support, please let us know. We’re here to help you succeed.
+
+Let’s work together to get things back on track. Thanks for your attention to this!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Performance Concern
+
+Dear ${name},
+
+I am writing to formally address concerns regarding your recent performance at Dairy Queen Courtenay. Specifically, there have been issues with ${aspects}, which have impacted the effectiveness of our operations.
+
+It is essential that performance standards are met to ensure the smooth functioning of our team. Please review the specific areas where improvement is needed and outline any support or resources you may require to enhance your performance.
+
+Failure to show improvement may result in further disciplinary actions. We are committed to helping you succeed and expect to see progress in these areas.
+
+Thank you for your attention to this matter.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                // Continue with other templates similarly
+                case 'template5':
+                    // Violation of Company Policies
+                    const policy = document.getElementById('policy').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Policy Violation
+
+Hey ${name},
+
+I wanted to chat with you about something important. It’s come to our attention that there was a recent violation of company policies regarding ${policy}.
+
+We need everyone to follow our guidelines to keep things running smoothly and ensure fairness for everyone. If you’re unsure about any of the policies or have any questions, feel free to reach out. We’re here to help clarify things.
+
+Please make sure to adhere to our policies moving forward. Thanks for your understanding!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Violation of Company Policies
+
+Dear ${name},
+
+I am writing to formally address a violation of company policies at Dairy Queen Courtenay. Specifically, there has been an infringement regarding ${policy}.
+
+Adherence to company policies is critical for maintaining operational standards and ensuring a professional work environment. Please review the relevant policy and take immediate corrective action to comply with our guidelines.
+
+Continued violations may result in further disciplinary measures. We appreciate your immediate attention to this matter.
+
+Thank you for your cooperation.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template6':
+                    // Unprofessional Behavior
+                    const behavior = document.getElementById('behavior').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Professional Conduct
+
+Hey ${name},
+
+I need to talk to you about some recent behavior that’s been a bit unprofessional. We’ve noticed ${behavior}, and it’s impacting the work environment.
+
+We all want to maintain a positive and respectful workplace, so it’s important to address this. If there’s something on your mind or if you need to discuss any issues, please come see me. Let’s work together to keep things professional.
+
+Thanks for your attention to this matter!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Concern Regarding Unprofessional Behavior
+
+Dear ${name},
+
+I am writing to formally address a concern regarding unprofessional behavior observed at Dairy Queen Courtenay. Specifically, there have been instances of ${behavior}, which are inconsistent with our standards for workplace conduct.
+
+Maintaining a professional and respectful environment is essential for effective teamwork and overall workplace morale. Please address this behavior immediately and adhere to our standards of professionalism.
+
+Continued unprofessional conduct may lead to further disciplinary actions. We expect improvements in your behavior going forward.
+
+Thank you for your cooperation.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template7':
+                    // Harassment/Bullying
+                    const individualgroup = document.getElementById('individualgroup').value;
+                    const nature = document.getElementById('nature').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Important: Harassment/Bullying Concern
+
+Hey ${name},
+
+I need to address a serious issue. We’ve received reports about some behavior that’s been considered harassment or bullying towards ${individualgroup}. This kind of behavior is not acceptable at Dairy Queen Courtenay.
+
+We want to make sure everyone feels safe and respected at work. If there’s something you’d like to discuss or if you need support, please come talk to me directly. It’s important that we all treat each other with kindness and respect.
+
+Please make sure to avoid any behavior that could be seen as harassment or bullying moving forward. Thanks for understanding.
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Harassment/Bullying Incident
+
+Dear ${name},
+
+I am writing to formally address a serious concern regarding harassment and/or bullying at Dairy Queen Courtenay. It has come to our attention that there have been incidents involving ${individualgroup} that are classified as ${nature}.
+
+Maintaining a respectful and safe work environment is crucial for all employees. Such behavior is in violation of our company policies and is not tolerated. We request that you cease any actions that could be perceived as harassment or bullying immediately.
+
+Please be aware that continued incidents may result in further disciplinary actions. We expect a prompt and respectful resolution to this matter.
+
+Thank you for your immediate attention to this issue.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template8':
+                    // Dress Code Violation
+                    const violation = document.getElementById('violation-dresscode').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Dress Code Reminder
+
+Hey ${name},
+
+Just a quick note about our dress code. We’ve noticed that there’s been a recent issue with ${violation}.
+
+It’s important for everyone to stick to our dress code to keep things looking professional and consistent at Dairy Queen Courtenay. Please make sure to follow the dress code guidelines from now on.
+
+If you have any questions or need clarification on what’s acceptable, feel free to ask. Thanks for your cooperation!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Dress Code Violation
+
+Dear ${name},
+
+I am writing to formally address a violation of our dress code policy at Dairy Queen Courtenay. Specifically, there has been an issue with ${violation}.
+
+Adhering to the dress code is essential for maintaining a professional appearance and ensuring consistency across our team. Please review the dress code policy and make the necessary adjustments to comply with our standards.
+
+Failure to adhere to the dress code may result in further disciplinary actions. We appreciate your immediate attention to this matter.
+
+Thank you for your cooperation.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template9':
+                    // Booking Time Off
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Time Off Booking Reminder
+
+Hey ${name},
+
+Just a quick reminder about booking time off. If you need to take some time off, make sure to use the "Book Off" book in the office. The cutoff for booking time off is every Thursday for the upcoming week’s schedule.
+
+It’s your responsibility to book your time off on time, and we can’t make exceptions if you forget. If you miss the deadline, please find a replacement for your shift.
+
+Let me know if you have any questions about the procedure. Thanks for staying on top of this!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Time Off Booking Procedure
+
+Dear ${name},
+
+I am writing to remind you of the procedure for booking time off at Dairy Queen Courtenay. To request time off, you must use the "Book Off" book located in the office. Please ensure that all time off requests are made by the cutoff date, which is Thursday each week for the upcoming schedule.
+
+It is your responsibility to adhere to this booking procedure. Unfortunately, we cannot accommodate requests if the deadline is missed. Should you fail to book your time off in advance, it will be necessary for you to arrange for a replacement for your shift.
+
+Should you have any questions regarding this procedure, please do not hesitate to contact me. Thank you for your cooperation.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template10':
+                    // Unsafe Work Practices
+                    const unsafeBehavior = document.getElementById('behavior-unsafe').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Safety Practices Reminder
+
+Hey ${name},
+
+I wanted to chat with you about some recent safety practices. We’ve noticed that ${unsafeBehavior} hasn’t been followed properly. It’s important to stick to our safety guidelines to keep everyone safe and prevent accidents.
+
+Please make sure to follow all safety procedures and use the proper equipment. If you have any questions about the safety practices or need a refresher, just let me know.
+
+Thanks for helping us keep a safe work environment!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Unsafe Work Practices
+
+Dear ${name},
+
+I am writing to formally address concerns regarding unsafe work practices observed at Dairy Queen Courtenay. Specifically, there have been instances of ${unsafeBehavior}, which are inconsistent with our established safety protocols.
+
+Ensuring adherence to safety procedures is critical to maintaining a secure work environment and preventing accidents. Please review the relevant safety guidelines and take immediate corrective actions to comply with these practices.
+
+Failure to follow safety procedures may result in further disciplinary measures. We appreciate your prompt attention to this matter.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template11':
+                    // Conflict Resolution
+                    const otherEmployee = document.getElementById('other-employee-conflict').value;
+                    const issue = document.getElementById('issue-conflict').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Resolving Conflicts
+
+Hey ${name},
+
+I wanted to address a recent conflict between you and ${otherEmployee}. We’ve noticed some tension that’s affecting the work environment.
+
+It’s important for us to work through these issues together. If there’s something specific that needs to be discussed or resolved, please come see me so we can sort it out. We all need to be able to work well together.
+
+Thanks for your understanding!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Conflict Resolution
+
+Dear ${name},
+
+I am writing to formally address a conflict involving you and ${otherEmployee} that has recently been observed at Dairy Queen Courtenay. Such conflicts can impact team dynamics and overall productivity.
+
+It is essential to resolve these issues professionally and constructively. Please arrange a meeting with me at your earliest convenience to discuss the matter and work towards a resolution.
+
+We expect a cooperative approach to resolving this conflict. Thank you for your attention to this important issue.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                case 'template12':
+                    // Lack of Teamwork
+                    const projectTask = document.getElementById('project-task').value;
+                    if (tone === 'casual') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Teamwork
+
+Hey ${name},
+
+I wanted to talk about the recent teamwork on ${projectTask}. It seems like there’s been some difficulty working together, which is affecting the overall success of our projects.
+
+Let’s work on improving our collaboration and communication. If there’s something specific that’s causing issues or if you need help, let me know. We’re all in this together, and it’s important that we support each other.
+
+Thanks for your attention to this!
+
+Best,
+[Your Name]
+Manager`;
+                    } else if (tone === 'formal') {
+                        content = `Dairy Queen Courtenay
+
+Date: ${date}
+
+To: ${name}
+
+Subject: Lack of Teamwork
+
+Dear ${name},
+
+I am writing to address concerns regarding a lack of effective teamwork observed in relation to ${projectTask}. Collaborative efforts are crucial for the success of our projects and overall team performance.
+
+Please review your approach to teamwork and make the necessary adjustments to improve cooperation and communication with your colleagues. It is essential to contribute effectively to team objectives.
+
+Continued issues with teamwork may result in further actions. We appreciate your immediate attention to this matter.
+
+Sincerely,
+[Your Name]
+Manager`;
+                    }
+                    break;
+                default:
+                    content = 'Invalid template selected.';
+            }
+
+            // Display the generated content in the popup
+            showPopup(content);
+        }
+    </script>
+</body>
+
+</html>

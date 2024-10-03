@@ -1,275 +1,136 @@
-/* Base Styles */
+/* General Styles */
 body {
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #000;
+    padding: 0;
+    background-color: #1c1c1c;
     color: #e0e0e0;
-    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
 }
 
-/* Landing Page Styles */
-#landing-page {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    background: url('images/space-background.jpg') center/cover no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.landing-content {
-    text-align: center;
-    position: relative;
-    width: 400px;
-    height: 400px;
-}
-
-.planet {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150px;
-    height: 150px;
-    margin-left: -75px;
-    margin-top: -75px;
-}
-
-.planet-logo {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    /* Added a subtle glow effect */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-
-/* Orbit Styles */
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300px;
-    height: 300px;
-    margin-left: -150px;
-    margin-top: -150px;
-    border-radius: 50%;
-}
-
-.orbit-path {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-}
-
-.orbit-item {
-    position: absolute;
-    width: 100px;
-    height: 30px;
-    margin-left: -50px;
-    margin-top: -15px;
-    text-align: center;
-    line-height: 30px;
+a {
     color: #e0e0e0;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 600;
-    transform-origin: 150px 0px;
-    animation: orbitAnimation 3600s linear infinite;
 }
 
-.orbit-item:hover {
-    color: #bb86fc;
+a:hover {
+    text-decoration: underline;
 }
 
-@keyframes orbitAnimation {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-/* Ensuring text remains upright */
-.orbit-item span {
-    display: block;
-    transform: rotate(0deg);
+.center-symbol {
+    font-size: 6em;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #e0e0e0;
 }
 
-/* Positioning orbit items at fixed angles */
-.orbit-item:nth-child(1) { /* Art */
-    transform: rotate(0deg);
-    top: 50%;
-    left: 50%;
+.tabs {
+    display: flex;
+    gap: 20px;
 }
 
-.orbit-item:nth-child(2) { /* Web Dev */
-    transform: rotate(72deg);
-    top: 50%;
-    left: 50%;
+.tab-link {
+    background-color: transparent;
+    border: 2px solid #e0e0e0;
+    color: #e0e0e0;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.orbit-item:nth-child(3) { /* Chessitron */
-    transform: rotate(144deg);
-    top: 50%;
-    left: 50%;
+.tab-link:hover {
+    background-color: #e0e0e0;
+    color: #1c1c1c;
+}
+.center-symbol, .tabs {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+.center-symbol {
+    animation-delay: 0.5s;
+}
+.tabs {
+    animation-delay: 1s;
 }
 
-.orbit-item:nth-child(4) { /* Food */
-    transform: rotate(216deg);
-    top: 50%;
-    left: 50%;
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+body {
+    background: linear-gradient(135deg, #1c1c1c 25%, #2e2e2e 100%);
 }
 
-.orbit-item:nth-child(5) { /* Contact */
-    transform: rotate(288deg);
-    top: 50%;
-    left: 50%;
-}
 
-/* Popup Content Styles */
-#popup-content {
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
     position: fixed;
-    top: 0;
+    z-index: 10;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    overflow-y: auto;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s;
+    overflow: auto;
+    background-color: rgba(28, 28, 28, 0.95);
 }
 
-#popup-content.visible {
-    opacity: 1;
-}
-
-.popup-inner {
-    background-color: #1e1e1e;
+.modal-content {
+    background-color: #2b2b2b;
+    margin: 10% auto;
     padding: 20px;
-    margin: 50px auto;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 800px;
+    border: 1px solid #444;
+    width: 80%;
+    max-width: 600px;
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
     position: relative;
+    border-radius: 5px;
 }
 
-#close-popup {
+.close-button {
+    color: #e0e0e0;
     position: absolute;
     top: 15px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: #e0e0e0;
-    font-size: 2rem;
+    right: 20px;
+    font-size: 28px;
     cursor: pointer;
 }
 
-#close-popup:hover {
-    color: #bb86fc;
+.close-button:hover {
+    color: #cccccc;
 }
 
-/* Section Themes */
-/* Art Section Theme */
-body.art-theme .popup-inner {
-    background-color: #1a1a1a;
+.modal h2 {
+    margin-top: 0;
 }
 
-body.art-theme h1, body.art-theme p {
-    color: #e0e0e0;
+.modal p {
+    line-height: 1.6;
 }
 
-body.art-theme .gallery img {
-    filter: grayscale(0);
-}
-
-/* Web Dev Section Theme */
-body.web-theme .popup-inner {
-    background-color: #c0c0c0;
-    color: #000;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-body.web-theme h1, body.web-theme p {
-    color: #000;
-}
-
-body.web-theme #close-popup {
-    color: #000;
-}
-
-/* Chessitron Section Theme */
-body.chess-theme .popup-inner {
-    background: url('images/wood-texture.jpg') center/cover no-repeat;
-    color: #f5f5dc;
-}
-
-body.chess-theme h1, body.chess-theme p {
-    color: #f5f5dc;
-}
-
-body.chess-theme #close-popup {
-    color: #f5f5dc;
-}
-
-/* Food Section Theme */
-body.food-theme .popup-inner {
-    background-color: #fff8e1;
-    color: #5d4037;
-}
-
-body.food-theme h1, body.food-theme p {
-    color: #5d4037;
-}
-
-body.food-theme #close-popup {
-    color: #5d4037;
-}
-
-/* Contact Section Theme */
-body.contact-theme .popup-inner {
-    background-color: #000;
-    color: #33ff33;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-body.contact-theme h1, body.contact-theme p {
-    color: #33ff33;
-}
-
-body.contact-theme #close-popup {
-    color: #33ff33;
-}
-
-/* Additional Styles */
-section {
-    padding: 20px 0;
-}
-
-section h1 {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-section p {
-    font-size: 1rem;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-/* Responsive Adjustments */
+/* Responsive Design */
 @media (max-width: 600px) {
-    .orbit, .orbit-item {
-        display: none;
+    .center-symbol {
+        font-size: 4em;
     }
-    .planet {
-        width: 100px;
-        height: 100px;
-        margin-left: -50px;
-        margin-top: -50px;
+
+    .tab-link {
+        padding: 8px 16px;
+        font-size: 0.9em;
     }
-    .landing-content {
-        width: 200px;
-        height: 200px;
+
+    .modal-content {
+        width: 90%;
     }
 }
+

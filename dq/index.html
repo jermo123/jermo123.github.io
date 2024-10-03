@@ -2,403 +2,587 @@
 <html lang="en">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Manager's Dashboard</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
-</head>
+    <!-- Existing head content -->
+    <meta charset="UTF-8">
+    <title>CVDQ Manager Dashboard</title>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+        }
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #4e73df;
+            color: #fff;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        .sidebar .sidebar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-color: #2e59d9;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #1d2c8a;
+            text-decoration: none;
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+        }
+        /* Content Styles */
+        #content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Topbar Styles */
+        .topbar {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Main Content */
+        .container-fluid {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background-color: #4e73df;
+            color: #fff;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        /* Slideshow Styles */
+#slideshow {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+        #slideshow img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        #slideshow img.active {
+            opacity: 1;
+            position: relative;
+        }
+        /* Footer Styles */
+        .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            #wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            #content-wrapper {
+                margin-top: 0;
+            }
+        }
+    </style>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
     <script>
+        // Open Folder Function (Requires Backend Support)
         function openFolder(path) {
-            window.pywebview.api.open_folder(path);
+            if (window.pywebview && window.pywebview.api) {
+                window.pywebview.api.open_folder(path);
+            } else {
+                alert('Folder access is not supported in this environment.');
+            }
         }
-    </script>
 
-
-
-    <script>
-        function openBD() {
-            window.open('https://script.google.com/macros/s/AKfycbweeKEF5_cJBT0V516R9ETytpNBRcLCMsyJZ7wT8a10U9civGjLemcZ3OlW3YpKvZI4/exec', 'popupWindow', 'width=800,height=1500,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
-        }
-    </script>
-
-    <script>
-        function openTS() {
-            window.open('https://script.google.com/macros/s/AKfycbywBnBcoMeY_G-iXQaTGC2Se-w6KOpb0792bI006MObix3kkr-RdYrHBMLZxWwBsxGH/exec', 'popupWindow', 'width=800,height=1500,scrollbars=yes,menubar=no,toolbar=no,location=no,status=no');
-        }
-    </script>
-
-
-<body id="page-top">
-
-    <!-- Page Wrapper -->
-<div id="wrapper">
-
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                </div>
-                <div class="sidebar-brand-text mx-3">dq courtenay</div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <!-- Heading -->
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
+        // Open Window Function
+        function openWindow(url) {
+            const width = 1100;
+            const height = 800;
+            const left = (screen.width - width) / 2;
+            const top = (screen.height - height) / 2;
             
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-<div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li>
+            window.open(url, 'popupWindow', `width=${width},height=${height},scrollbars=yes,menubar=no,toolbar=no,location=no,status=no,left=${left},top=${top}`);
+        }
 
-
-
-            <!-- Nav Item - Charts -->
-          <li class="nav-item"> <a class="nav-link" href="emailtemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Email Templates</span></a> </li>
-
-          <li class="nav-item"> <a class="nav-link" href="writetemp.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Write Up Templates</span></a> </li>
-	
-<li class="nav-item"> <a class="nav-link" href="javascript:void(0);" onclick="openBD()"><i class="fas fa-fw fa-chart-area"></i><span>Business Directory</span></a></li>
-
-<li class="nav-item"> <a class="nav-link" href="javascript:void(0);" onclick="openTS()"><i class="fas fa-fw fa-chart-area"></i><span>Troubleshooting Guides</span></a></li>
-
-          <li class="nav-item"> <a class="nav-link" href="shopping.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Shopping List</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="meeting.html"> <i class="fas fa-fw fa-chart-area"></i> 
-			  <span>Meeting Topics</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="calendar.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Calendar</span></a></li>
-          <li class="nav-item"> <a class="nav-link" href="troubleshooting.html"> <i class="fas fa-fw fa-chart-area"></i> <span>Troubleshooting</span></a></li>						
-
-            <!-- Nav Item - Tables -->
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">            </div>
-
-            <!-- Sidebar Message -->
-            
-        </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                  <div id="datetime"></div>
-					       <script>
+        // Update Date and Time
         function updateDateTime() {
             const now = new Date();
             const options = {
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit', 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
                 second: '2-digit'
             };
             const formattedDateTime = now.toLocaleString('en-US', options);
             document.getElementById('datetime').innerText = formattedDateTime;
         }
-
-        // Update the date and time immediately
-        updateDateTime();
-        // Update the date and time every second
         setInterval(updateDateTime, 1000);
+        document.addEventListener('DOMContentLoaded', updateDateTime);
+
+        // Slideshow Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('#slideshow img');
+            let currentIndex = 0;
+            const totalImages = images.length;
+
+            function showNextImage() {
+                images[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % totalImages;
+                images[currentIndex].classList.add('active');
+            }
+
+            // Initial display
+            images[currentIndex].classList.add('active');
+
+            // Change image every 5 seconds
+            setInterval(showNextImage, 5000);
+
+            // Refresh images every 10 minutes
+            setInterval(function() {
+                images.forEach(function(img) {
+                    const src = img.getAttribute('src');
+                    img.setAttribute('src', src.split('?')[0] + '?t=' + new Date().getTime());
+                });
+            }, 300000);
+        });
+
+        // Reminder data
+        const reminders = [
+            // Examples of reminders
+{
+type: 'weekly',
+daysOfWeek: [1, 5],
+title: 'Garbage Pickup Day',
+description: '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link">Form</a>'
+},
+{
+type: 'weekly',
+daysOfWeek: [2],
+title: 'Recycling Pickup Day',
+description: '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link">Form</a>'
+},
+{
+type: 'monthly',
+dayOfMonth: 1,
+title: 'Inventory',
+description: ' '
+},
+{
+type: 'specificDate',
+date: '2024-10-28',
+title: 'New Items Launching',
+description: 'Honey garlic strips, frozen hot chocolate, caramel java chip blizzard'
+},
+{
+type: 'specificDate',
+date: '2024-11-25',
+title: 'New Blizzard',
+description: 'Peppermint hot cocoa'
+},
+        ];
+
+        // Function to check if a reminder is upcoming
+        function isReminderUpcoming(reminder, today, daysAhead) {
+            const upcomingDate = new Date(today);
+            upcomingDate.setDate(today.getDate() + daysAhead);
+
+            switch(reminder.type) {
+                case 'specificDate':
+                    let reminderDate = new Date(reminder.date);
+                    reminderDate.setHours(0,0,0,0);
+                    return reminderDate >= today && reminderDate <= upcomingDate;
+                case 'weekly':
+                    for(let i = 0; i <= daysAhead; i++) {
+                        let date = new Date(today);
+                        date.setDate(today.getDate() + i);
+                        let dayOfWeek = date.getDay(); // 0=Sunday
+                        if(reminder.daysOfWeek.includes(dayOfWeek)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case 'monthly':
+                    for(let i = 0; i <= daysAhead; i++) {
+                        let date = new Date(today);
+                        date.setDate(today.getDate() + i);
+                        if(date.getDate() === reminder.dayOfMonth) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case 'nthDayOfMonth':
+                    for(let i = 0; i <= daysAhead; i++) {
+                        let date = new Date(today);
+                        date.setDate(today.getDate() + i);
+                        if(isNthDayOfMonth(date, reminder.nth, reminder.dayOfWeek)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                default:
+                    return false;
+            }
+        }
+
+        // Function to check if a date is the nth occurrence of a day of week in the month
+        function isNthDayOfMonth(date, nth, dayOfWeek) {
+            if(date.getDay() !== dayOfWeek) return false;
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let dayCount = 0;
+            for(let d = 1; d <= date.getDate(); d++) {
+                let currentDate = new Date(date.getFullYear(), date.getMonth(), d);
+                if(currentDate.getDay() === dayOfWeek) {
+                    dayCount++;
+                    if(currentDate.getDate() === date.getDate() && dayCount === nth) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Function to display upcoming reminders
+        function displayReminders() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const daysAhead = 7; // Show reminders for the next 7 days
+            const reminderList = document.getElementById('reminderList');
+            reminderList.innerHTML = '';
+
+            reminders.forEach(function(reminder) {
+                if(isReminderUpcoming(reminder, today, daysAhead)) {
+                    let li = document.createElement('li');
+                    let reminderDate = getReminderDate(reminder, today);
+                    let dateString = reminderDate ? reminderDate.toLocaleDateString() : '';
+                    li.innerHTML = '<strong>' + reminder.title + '</strong> (' + dateString + '): ' + reminder.description;
+                    reminderList.appendChild(li);
+                }
+            });
+        }
+
+        // Function to get the date of the upcoming reminder
+        function getReminderDate(reminder, today) {
+            switch(reminder.type) {
+                case 'specificDate':
+                    return new Date(reminder.date);
+                case 'weekly':
+                    for(let i = 0; i <= 7; i++) {
+                        let date = new Date(today);
+                        date.setDate(today.getDate() + i);
+                        if(reminder.daysOfWeek.includes(date.getDay())) {
+                            return date;
+                        }
+                    }
+                    return null;
+                case 'monthly':
+                    let date = new Date(today.getFullYear(), today.getMonth(), reminder.dayOfMonth);
+                    if(date < today) {
+                        date.setMonth(date.getMonth() + 1);
+                    }
+                    return date;
+                case 'nthDayOfMonth':
+                    let nthDate = getNthDayOfMonthDate(today, reminder.nth, reminder.dayOfWeek);
+                    if(nthDate < today) {
+                        nthDate = getNthDayOfMonthDate(new Date(today.getFullYear(), today.getMonth() + 1, 1), reminder.nth, reminder.dayOfWeek);
+                    }
+                    return nthDate;
+                default:
+                    return null;
+            }
+        }
+
+        // Function to get the date of the nth occurrence of a day of week in a month
+        function getNthDayOfMonthDate(startDate, nth, dayOfWeek) {
+            let date = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+            let count = 0;
+            while(date.getMonth() === startDate.getMonth()) {
+                if(date.getDay() === dayOfWeek) {
+                    count++;
+                    if(count === nth) {
+                        return date;
+                    }
+                }
+                date.setDate(date.getDate() + 1);
+            }
+            return null;
+        }
+
+        // Run displayReminders on page load
+        document.addEventListener('DOMContentLoaded', displayReminders);
     </script>
+</head>
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+<body>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar d-flex flex-column">
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <!-- Employee Management -->
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbyBJPhHge6kVOjpiOCCtuTfyRRR7dbmaeAuTPurjUbJkEG2MNPLQCLk3MCFAtBVSLPY/exec')">
+                        <i class="fas fa-address-book"></i> Business Directory
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="emailtemp.html"><i class="fas fa-envelope"></i> Email Templates</a></li>
+                <li class="nav-item"><a class="nav-link" href="writetemp.html"><i class="fas fa-file-alt"></i> Write Up Templates</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" onclick="openWindow('https://script.google.com/macros/s/AKfycbzy2NIfKJCEeSugpPvbuRzqAf6rZ8K6fheL4PMMB3WA8uQDN6ibbquM7scfTtNwwgGg/exec')">
+                        <i class="fas fa-tools"></i> Troubleshooting Guides
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="meeting.html"><i class="fas fa-comments"></i> Meeting Topics</a></li>
+                            <li class="nav-item"><a class="nav-link" href="shopping.html"><i class="fas fa-shopping-cart"></i> Shopping List</a></li>
 
-                    <!-- Topbar Search -->
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                <!-- Store Management -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#storeManagement" data-bs-toggle="collapse" aria-expanded="false">
+                        <i class="fas fa-store"></i> Store Management
+                    </a>
+                    <div class="collapse" id="storeManagement">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdyCmdRINv3d4swrR7SIqqmsg4hLsDZvRGCHNtkPIX8qjKvEQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-wrench"></i> Equipment Logs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-trash"></i> Garbage / Recycling</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSf1oiARDYknazjg3BIL9SuBxTkJ5vV91wwQ0iLUxoMfo4qXWQ/viewform?usp=sf_link" target="_blank"><i class="fas fa-recycle"></i> Waste Reporting</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdFwJ37JReVOUQrmVnIE6p5I3sPRvoqb5X-7DRJgIrBV_kjMA/viewform?usp=sf_link" target="_blank"><i class="fas fa-exclamation-circle"></i> Complaint Entry</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank"><i class="fas fa-dollar-sign"></i> Price Sheet</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <!-- Additional Links -->
+                <!-- You can add more navigation items here -->
+            </ul>
+        </nav>
+        <!-- End of Sidebar -->
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper">
+            <!-- Topbar -->
+            <nav class="topbar">
+                <div id="datetime" class="fw-bold"></div>
+                <button class="btn btn-primary d-md-none" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Main Content -->
+            <div class="container-fluid">
+                <div class="row g-4">
+                    <!-- Employee Management Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Employee Management
                             </div>
-                        </li>
-
-                        <!-- Nav Item - Alerts -->
-                        <!-- Nav Item - Messages -->
-                        
-                        <!-- Nav Item - User Information -->
-                        
-                    </ul>
-
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-              <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                <!-- Content Row -->
-                <!-- Earnings (Monthly) Card Example -->
-                        
-<!-- Earnings (Monthly) Card Example -->
-                <!-- Earnings (Monthly) Card Example -->
-                        
-                      <!-- Pending Requests Card Example -->                    
-
-                    <!-- Content Row -->
-
-                  <div class="row">
-
-                        <!-- Area Chart -->
-                    
-                    <!-- Pie Chart -->
-                </div>
-                <div class="col-lg-6">
-                    <!-- Dropdown Card Example -->
-                    
-                    <!-- Collapsable Card Example -->                </div>
-
-                  <!-- Content Row -->
-              </div>
-              <div class="container-fluid">
-                <!-- Page Heading -->
-<!-- Content Row -->
-                <div class="row">
-                  <!-- Grow In Utility -->
-                  <div class="col-lg-6">
-                    <div class="card position-relative">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Employee Management</h6>
-                      </div>
-                      <div class="card-body">
-                        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/groups/CVDQStaff/" target="_blank">Group</a> | <a href="https://www.messenger.com/" target="_blank">Messenger </a>&nbsp;</p>
-                        <div class="mb-3"> </div>
-                        <p><strong><a>Employee Directory: </a></strong><a>Entry Form</a> <a>| </a><a href="https://docs.google.com/spreadsheets/d/1la4VopFS5jatDUIKOMrfl1mqsP-IxTg8I4_WgWalHOs/edit?usp=sharing" target="_blank">Log Sheet</a><a>&nbsp; &nbsp;&nbsp;</a></p>
-<p><strong>Past Employee Log: </strong> <a href="https://1drv.ms/x/s!AhRmcc_j6cDSgdFLlkW-ZaqUxd2kbw?e=B8b9h2&nav=MTVfezE0NjM0MDg1LUMzQkYtNEI3QS1BMDNGLThCNjZBMTQ0QUQ3RX0" target="_blank">Log Sheet</a></p>
-                        <p><strong>Employee Absence Tracker: </strong><a href="https://1drv.ms/x/s!AhRmcc_j6cDSgY5q36vR_csv4_Akhg?e=d76fOR" target="_blank">Log Sheet</a>&nbsp; &nbsp; &nbsp;<strong> &nbsp;&nbsp;</strong></p>
-                        <p><strong>DQ Knowledge Quizzes:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSesYq3v5TmkSLkgwgnp9qwBUKnc27MY_UF6QRIzBJt1WKSkfw/viewform?usp=sf_link" target="_blank">Test Form</a> | <a href="https://docs.google.com/spreadsheets/d/13FBmUpQ_eOGbn9byOj9NR6I6c94MbDZpOo6cnyNB7fA/edit?usp=sharing" target="_blank">Log Sheet</a>&nbsp; &nbsp;&nbsp;</p>
-                        <p><strong>Employee Review</strong><strong>:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSemh1YxIjyLSEQZ3ncnhqhO5VkaBuUBuvQxVK_Jtx7xI6fSuQ/viewform?usp=sf_link" target="_blank">Review Form</a> | <a href="https://docs.google.com/spreadsheets/d/13FBmUpQ_eOGbn9byOj9NR6I6c94MbDZpOo6cnyNB7fA/edit?usp=sharing" target="_blank">Log Sheet</a></p>
-                        <p><strong>Online Team Management:</strong> <a href="https://admin7.brinkpos.net/Staff/Employees/" target="_blank">Brink</a> | <a href="https://dqhub.dairyqueen.net/store_tools/security-setup/manage-my-team" target="_blank">DQ Hub</a>&nbsp;</p>
-                                            
-                      
-                      
-                        
-                        
-
-                        
-</div>
-                    </div>
-                  </div>
-                  <!-- Fade In Utility -->
-                  <div class="col-lg-6">
-                    <div class="card position-relative">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Store Management</h6>
-                      </div>
-                      <div class="card-body">
-                        <p><strong>Equipment Logs: </strong><a href="https://docs.google.com/forms/d/e/1FAIpQLSdyCmdRINv3d4swrR7SIqqmsg4hLsDZvRGCHNtkPIX8qjKvEQ/viewform?usp=sf_link" target="_blank">Entry Form </a>| <a href="https://docs.google.com/spreadsheets/d/1aZ3RUXGuFHt9XTrx7huS0_yj4XsxEPt_wl21vAXpBE4/edit?usp=sharing" target="_blank">Log Sheet</a></p>
-                        <p><strong>Garbage / Recycling: </strong><a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1ea0AmyRM3wC0XXfo3uw3HNdkob-ld_z8JRvTr_62G0U/edit?usp=sharing" target="_blank">Log Sheet</a></p>
-                        <p><strong>Waste Reporting</strong>: <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1oiARDYknazjg3BIL9SuBxTkJ5vV91wwQ0iLUxoMfo4qXWQ/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1-g-AJ5706oFk1TAJV0_Wr09ogl_gSVE0EVm3FKzcuSM/edit?usp=sharing" target="_blank">Log Sheet&nbsp;&nbsp;</a></p>
-                        <p><strong>Complaints:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFwJ37JReVOUQrmVnIE6p5I3sPRvoqb5X-7DRJgIrBV_kjMA/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1zGIAC9Qw2GwwlFiiJfAeH39oxfX9NpPVwDSoSeoV7_Q/edit?usp=sharing" target="_blank">Log Sheet</a></p>
-                        <p><strong>Ordering: </strong><a href="https://order.gfs.com/" target="_blank">GFS</a> | <a href="https://max.saputo.com/" target="_blank">Saputo</a> | <a href="https://orderonotto.ca/ordering-hub/routes" target="_blank">Bimbo</a>&nbsp;&nbsp;</p>
-<p><a href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank">Vancouver Island DQ Price Sheet&nbsp;</a></p>
-                        <p><a href="https://1drv.ms/x/s!AhRmcc_j6cDSgYQr3tGy43rRSQin6Q?e=oP8xEF" target="_blank">Online Cake Orders&nbsp; &nbsp; &nbsp;</a></p>
-
-                          <p><a href="cakebook.html" target="_blank">Cake Book</a></p>
-							
-							
-							
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><strong>Facebook:</strong> <a href="https://www.facebook.com/groups/CVDQStaff/" target="_blank">Group</a> | <a href="https://www.messenger.com/" target="_blank">Messenger</a></li>
+                                    <li><strong>Employee Directory:</strong> <a href="https://docs.google.com/spreadsheets/d/1la4VopFS5jatDUIKOMrfl1mqsP-IxTg8I4_WgWalHOs/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Past Employee Log:</strong> <a href="#" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Employee Absence Tracker:</strong> <a href="#" target="_blank">Log Sheet</a></li>
+                                    <li><strong>DQ Knowledge Quizzes:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSesYq3v5TmkSLkgwgnp9qwBUKnc27MY_UF6QRIzBJt1WKSkfw/viewform?usp=sf_link" target="_blank">Test Form</a> | <a href="https://docs.google.com/spreadsheets/d/13FBmUpQ_eOGbn9byOj9NR6I6c94MbDZpOo6cnyNB7fA/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Employee Review:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSemh1YxIjyLSEQZ3ncnhqhO5VkaBuUBuvQxVK_Jtx7xI6fSuQ/viewform?usp=sf_link" target="_blank">Review Form</a> | <a href="https://docs.google.com/spreadsheets/d/13FBmUpQ_eOGbn9byOj9NR6I6c94MbDZpOo6cnyNB7fA/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Online Team Management:</strong> <a href="https://admin7.brinkpos.net/Staff/Employees/" target="_blank">Brink</a> | <a href="https://dqhub.dairyqueen.net/store_tools/security-setup/manage-my-team" target="_blank">DQ Hub</a></li>
+                                </ul>
+                            </div>
                         </div>
-                      </div>
-</div>
-                  </div>
-
-                <div class="row">
-                  <!-- Grow In Utility -->
-                  <div class="col-lg-6">
-                    <div class="card position-relative">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Bookmarks</h6>
-                      </div>
-                      <div class="card-body"> 
-                      <p><a href="https://payroll.payworks.ca/loginscreen.asp?LangId=0" target="_blank">Payworks</a></p>
-                      <p><a href="https://airtable.com" target="_blank">AirTable (edit dashboard tables)</a></p>
-                      <p><a href="https://tfwp-jb.lmia.esdc.gc.ca/employer/" target="_blank">LMIA Portal</a></p>
-
-
-                        <p><a href="https://www.worksafebc.com/en" target="_blank">WorkSafe BC</a></p>
-                        <p><strong>WasteConnections: </strong><a href="https://www.wasteconnectionscanada.com/contact-us/" target="_blank">Missed Garbage Pickup</a></p>
-                        <p><a href="https://mybusinesshub.rogers.com/" target="_blank">Rogers Business Hub&nbsp;</a></p>
-                      <p><a href="http://grouphealth.websonline.ca/" target="_blank">GroupHEALTH&nbsp;</a></p>
-                        <p><strong>DQ Hub: </strong><a href="https://dqhub.dairyqueen.net" target="_blank">Portal</a> | <a href="https://dqhub.dairyqueen.net/tools/cakes-order-management" target="_blank">CakeOrders</a>&nbsp;   | <a href="https://dqhub.dairyqueen.net/tools/dqcakes-site-mgmt" target="_blank">CakeSite</a> | <a href="https://dqhub.dairyqueen.net/tools/digital-publishing" target="_blank">Publishing</a></p>
-
-
-
-
-                      </div>
                     </div>
-                  </div>
-                  <!-- Fade In Utility -->
-                  <div class="col-lg-6">
-                    <div class="card position-relative">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Portals and Tools</h6>
-                      </div>
-                      <div class="card-body">
-<p><strong>Data Central</strong>: <a href="https://dc01.rmdatacentral.com/portal1311/activities/posimport" target="_blank">Import</a><strong> |</strong> <a href="https://dc01.rmdatacentral.com/portal1311/reports/reportdetail/da00ddc4-0d93-420e-ae97-f80b79519c89" target="_blank">Sales</a> | <a href="https://dc01.rmdatacentral.com/portal1311/reports/reportdetail/82dc7347-7db5-45e1-aaf1-b26cc74c8390" target="_blank">Labor</a></p>
-						  <div>
-<p><strong>Brink:</strong> &nbsp;<a href="https://admin7.brinkpos.net" target="_blank">Portal</a> | <a href="https://admin7.brinkpos.net/SettingsEditor/" target="_blank">Settings</a>&nbsp; | <a href="https://admin7.brinkpos.net/Labor/Shifts/" target="_blank">Shifts</a> | <a href="https://admin7.brinkpos.net/Reports/Report/SalesSummary/" target="_blank">Sales Summary&nbsp; </a>&nbsp; &nbsp;</p>
-<p><strong>DoorDash:</strong> <a href="https://www.doordash.com/merchant/summary?store_id=2445844" target="_blank">Portal</a> | <a href="https://www.doordash.com/store/dairy-queen-courtenay-2445844/12849258/?preview=1" target="_blank">Live Menu&nbsp; &nbsp; </a>&nbsp;</p>
-<p><strong>Skip:</strong> <a href="https://restaurant.skipthedishes.com" target="_blank">Portal</a> | <a href="https://www.skipthedishes.com/restaurants/bb535b35-c6ba-4095-9abe-1409144d41da/draft" target="_blank">Live Menu</a></p>
-<p><strong>Uber:</strong> <a href="https://merchants.ubereats.com/manager?uclick_id=21bcdceb-4afb-403b-ae09-774a3f9106c9" target="_blank">Portal</a> &nbsp;&nbsp;</p>
-<p><a href="https://app.powerbi.com/groups/me/apps/38f23e90-a4b3-4f32-b15f-6cef8e6f087f/reports/872a6174-ba12-4a45-a0e5-3f9db4dba2c7/ReportSectionabd51c50a7ed32740b07?ctid=a4372e52-83bf-450e-b320-c64c627b5dcc&experience=power-bi" target="_blank">DQ Reports (Head Office)</a></p>
-                        <p><a href="https://web.na.bambora.com/admin/td_sDefault.asp" target="_blank">TD Cake Portal&nbsp;</a></p>
-                        <p><a href="https://www.inpulseonline.com/idq/flex-local/login" target="_blank">Digital Menu Board&nbsp;</a></p>
-<div class="mb-3"> </div>
-</div>
+                    <!-- Store Management Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Store Management
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><strong>Equipment Logs:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdyCmdRINv3d4swrR7SIqqmsg4hLsDZvRGCHNtkPIX8qjKvEQ/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1aZ3RUXGuFHt9XTrx7huS0_yj4XsxEPt_wl21vAXpBE4/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Garbage / Recycling:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdggWHDDqHn3jetrel2urG00Kh74LWltTho3Y9QB7zBre7QpQ/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1ea0AmyRM3wC0XXfo3uw3HNdkob-ld_z8JRvTr_62G0U/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Waste Reporting:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1oiARDYknazjg3BIL9SuBxTkJ5vV91wwQ0iLUxoMfo4qXWQ/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1-g-AJ5706oFk1TAJV0_Wr09ogl_gSVE0EVm3FKzcuSM/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Complaints:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFwJ37JReVOUQrmVnIE6p5I3sPRvoqb5X-7DRJgIrBV_kjMA/viewform?usp=sf_link" target="_blank">Entry Form</a> | <a href="https://docs.google.com/spreadsheets/d/1zGIAC9Qw2GwwlFiiJfAeH39oxfX9NpPVwDSoSeoV7_Q/edit?usp=sharing" target="_blank">Log Sheet</a></li>
+                                    <li><strong>Ordering:</strong> <a href="https://order.gfs.com/" target="_blank">GFS</a> | <a href="https://max.saputo.com/" target="_blank">Saputo</a> | <a href="https://orderonotto.ca/ordering-hub/routes" target="_blank">Bimbo</a></li>
+                                    <li><strong>Price Sheet:</strong> <a href="https://docs.google.com/spreadsheets/d/1lqTJfWhLGd-kTf3Jy--JVs8JB4BS3Y-LvNpj1dtu98Y/edit?usp=sharing" target="_blank">Vancouver Island DQ Price Sheet</a></li>
+                                    <li><strong>Online Cake Orders:</strong> <a href="#" target="_blank">View Orders</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div>&nbsp;</div>
-</div>
-               <div class="row">
-                  <!-- Grow In Utility -->
-                  <div class="col-lg-6">
-                    <div class="card position-relative">
-                      <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Folders (Requires Application)</h6>
-                      </div>
-                      <div class="card-body"> 
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Printables'); return false;">Log Sheets</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Dropbox'); return false;">Dropbox</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\Desktop\\Employee files'); return false;">Employee Files</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Supervisor File'); return false;">Supervisor Files</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\DQ FILES\\E drve\\D.Q Manager\\Month End'); return false;">Month End</a></p>
-    <p><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\FOOTAGE'); return false;">Backup Camera Footage</a></p>
-</div></div></div></div></div></div>
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>&nbsp;made by jeromy&nbsp; &nbsp; &nbsp;&nbsp;</span>
+                    <!-- Reminders Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Reminders
+                            </div>
+                            <div class="card-body">
+                                <ul id="reminderList" class="list-unstyled">
+                                    <!-- Reminders will be populated here -->
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+                    <!-- Bookmarks Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Bookmarks
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><a href="https://app.powerbi.com/groups/me/apps/38f23e90-a4b3-4f32-b15f-6cef8e6f087f/reports/872a6174-ba12-4a45-a0e5-3f9db4dba2c7/ReportSectionabd51c50a7ed32740b07?ctid=a4372e52-83bf-450e-b320-c64c627b5dcc&experience=power-bi" target="_blank"><i class="fas fa-chart-bar"></i> DQ Analytics Reports</a></li>
+                                    <li><a href="https://google.ca" target="_blank"><i class="fas fa-globe"></i> Google</a></li>
+                                    <li><a href="http://grouphealth.websonline.ca/" target="_blank"><i class="fas fa-heartbeat"></i> GroupHEALTH</a></li>
+                                    <li><a href="https://jermo123.github.io/cks/dashboard.html" target="_blank"><i class="fas fa-birthday-cake"></i> Cakes Dashboard</a></li>
+                                    <li><a href="https://tfwp-jb.lmia.esdc.gc.ca/employer/" target="_blank"><i class="fas fa-briefcase"></i> LMIA Portal</a></li>
+                                    <li><a href="https://payroll.payworks.ca/loginscreen.asp?LangId=0" target="_blank"><i class="fas fa-money-check-alt"></i> Payworks</a></li>
+                                    <li><a href="https://mybusinesshub.rogers.com/" target="_blank"><i class="fas fa-rocket"></i> Rogers Business Hub</a></li>
+                                    <li><a href="https://www.worksafebc.com/en" target="_blank"><i class="fas fa-hard-hat"></i> WorkSafe BC</a></li>
+                                    <li><a href="https://www.wasteconnectionscanada.com/contact-us/" target="_blank"><i class="fas fa-trash-alt"></i> Report Missed Garbage Pickup</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Portals and Tools Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Portals and Tools
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><strong>Brink:</strong> <a href="https://admin7.brinkpos.net" target="_blank">Portal</a> | <a href="https://admin7.brinkpos.net/SettingsEditor/" target="_blank">Settings</a> | <a href="https://admin7.brinkpos.net/Labor/Shifts/" target="_blank">Shifts</a> | <a href="https://admin7.brinkpos.net/Reports/Report/SalesSummary/" target="_blank">Sales Summary</a></li>
+                                    <li><strong>Data Central:</strong> <a href="https://dc01.rmdatacentral.com/portal1311/" target="_blank">Portal</a> | <a href="https://dc01.rmdatacentral.com/portal1311/activities/posimport" target="_blank">Import</a> | <a href="https://dc01.rmdatacentral.com/portal1311/reports/reportdetail/da00ddc4-0d93-420e-ae97-f80b79519c89" target="_blank">Sales</a> | <a href="https://dc01.rmdatacentral.com/portal1311/reports/reportdetail/82dc7347-7db5-45e1-aaf1-b26cc74c8390" target="_blank">Labor</a></li>
+                                    <li><strong>DoorDash:</strong> <a href="https://www.doordash.com/merchant/summary?store_id=2445844" target="_blank">Portal</a> | <a href="https://www.doordash.com/store/dairy-queen-courtenay-2445844/12849258/?preview=1" target="_blank">Live Menu</a></li>
+                                    <li><strong>DQ Hub:</strong> <a href="https://dqhub.dairyqueen.net" target="_blank">Portal</a> | <a href="https://dqhub.dairyqueen.net/tools/cakes-order-management" target="_blank">Cake Orders</a> | <a href="https://dqhub.dairyqueen.net/tools/dqcakes-site-mgmt" target="_blank">Cake Site</a> | <a href="https://dqhub.dairyqueen.net/tools/digital-publishing" target="_blank">Publishing</a> | <a href="https://dqhub.dairyqueen.net/technology/national-mobile-deals-home/national-mobile-deals-overview" target="_blank">Mobile Deals</a></li>
+                                    <li><strong>SkipTheDishes:</strong> <a href="https://restaurant.skipthedishes.com" target="_blank">Portal</a> | <a href="https://www.skipthedishes.com/restaurants/bb535b35-c6ba-4095-9abe-1409144d41da/draft" target="_blank">Live Menu</a></li>
+                                    <li><strong>Uber Eats:</strong> <a href="https://merchants.ubereats.com/manager?uclick_id=21bcdceb-4afb-403b-ae09-774a3f9106c9" target="_blank">Portal</a></li>
+                                    <li><strong>Cakes:</strong> <a href="https://web.na.bambora.com/admin/td_sDefault.asp" target="_blank">TD Portal</a></li>
+                                    <li><strong>Menu:</strong> <a href="https://www.inpulseonline.com/idq/flex-local/login" target="_blank">Digital Board</a></li>
+                                    <li><a href="rpt.html" target="_blank" title="Input a Summary Report from Brink in CSV format">Sales Summary Report Maker</a></li>
+                                    <li><a href="dt.html" target="_blank" title="Input a Raw Car Data CSV file from HME Cloud">Drive-Thru Analysis</a></li>
+                                    <li><a href="https://docs.google.com/spreadsheets/d/1TVc3wMJIMskp6LF2TVKo6yyPltUg7bo4GjFkc-oj0RA/edit?usp=sharing" target="_blank" title=":)">Preorder Tracker</a></li>
+                                    <li><a href="logsheet.html" target="_blank" title=":O">Log Sheet Hub</a></li>
 
-  </div>
-        <!-- End of Content Wrapper -->
 
-</div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-</a>
-
-    <!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Folders Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Folders (Requires Application)
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Printables'); return false;">Log Sheets</a></li>
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Dropbox'); return false;">Dropbox</a></li>
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\Desktop\\Employee files'); return false;">Employee Files</a></li>
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\Desktop\\Supervisor File'); return false;">Supervisor Files</a></li>
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\DQ FILES\\E drve\\D.Q Manager\\Month End'); return false;">Month End</a></li>
+                                    <li><a href="#" onclick="openFolder('C:\\Users\\cvdq\\OneDrive\\FOOTAGE'); return false;">Backup Camera Footage</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Current Conditions Slideshow Card -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Current Conditions
+                            </div>
+                            <div class="card-body">
+                                <div id="slideshow">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1037.jpg" alt="Camera 1037" class="active" title="Ryan Road | Refreshes every 5 minutes">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1038.jpg" alt="Camera 1038" title="17th St Bridge | Refreshes every 5 minutes">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1035.jpg" alt="Camera 1035" title="Superstore | Refreshes every 5 minutes">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1034.jpg" alt="Camera 1034" title="Dodge Dealership | Refreshes every 5 minutes">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1036.jpg" alt="Camera 1036" title="Manvirros | Refreshes every 5 minutes">
+                                    <img src="https://cache.drivebc.ca/bchighwaycam/pub/cameras/1033.jpg" alt="Camera 1033" title="17th St Bridge | Refreshes every 5 minutes">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <div class="footer">
+                &copy; 2024 Dairy Queen Courtenay Managers Dashboard. All rights reserved.
+            </div>
+            <!-- End of Footer -->
         </div>
+        <!-- End of Content Wrapper -->
     </div>
+    <!-- End of Page Wrapper -->
 
-    <!-- Bootstrap core JavaScript-->
-
-<!-- Core plugin JavaScript-->
-    
-    <!-- Custom scripts for all pages-->
-    
-    <!-- Page level plugins -->
-    
-    <!-- Page level custom scripts -->
-
+    <!-- Additional Scripts -->
+    <script>
+        // Sidebar Toggle for Mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+    </script>
 </body>
 
 </html>
+

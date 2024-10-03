@@ -2,57 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>mobes</title>
+    <title>Your Project Hub</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="center-symbol">mobes</div>
-        <div class="tabs">
-            <button class="tab-link" data-modal="about">About</button>
-            <button class="tab-link" data-modal="projects">Projects</button>
-            <button class="tab-link" data-modal="contact">Contact</button>
-            <button class="tab-link" data-modal="blog">Blog</button>
-        </div>
-    </div>
+        <header>
+            <h1>mobes</h1>
+            <nav>
+                <ul>
+                    <li><a href="#art">Art</a></li>
+                    <li><a href="#web-design">Web Design</a></li>
+                    <li><a href="#graphic-design">Graphic Design</a></li>
+                    <li><a href="#chessitron">Chessitron</a></li>
+                    <li><a href="#food">Food</a></li>
+                    <li><a href="#guides">Guides</a></li>
+                    <li><a href="#music">Music</a></li>
+                    <li><a href="#game-dev">Game Dev</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    <!-- Modal Templates -->
-    <div id="about" class="modal">s
-        <div class="modal-content">
-            <span class="close-button" data-close="about">&times;</span>
-            <h2>About Me</h2>
-            <p>hi, i'm jeromy. i’m a creator who loves blending art, tech, and storytelling. whether it's coding apps, writing guides, or making space for my art, i'm always exploring new ideas. outside of work, you'll find me enjoying sci-fi, painting, or working on personal projects. i'm passionate about crafting unique experiences and sharing what i learn along the way.</p>
-        </div>
-    </div>
-    <div id="projects" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="projects">&times;</span>
-            <h2>Projects</h2>
-            <p>oil painting</p>
-            <p>web design</p>
-            <p>graphic design</p>
-            <p>chessitron</p>
-            <p>food</p>
-            <p>guides</p>
+        <main>
+            <section id="art">
+                <h2>Art</h2>
+                <p>Explore my collection of artwork, featuring landscapes in oil.</p>
+                <!-- Add content such as images or descriptions -->
+            </section>
 
+            <section id="web-design">
+                <h2>Web Design</h2>
+                <p>Discover websites I've designed, showcasing modern aesthetics and user-friendly interfaces.</p>
+                <!-- Add content such as screenshots or project descriptions -->
+            </section>
 
-        </div>
-    </div>
-    <div id="contact" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="contact">&times;</span>
-            <h2>Contact</h2>
-            <p>...</p>
-        </div>
-    </div>
-    <div id="blog" class="modal">
-        <div class="modal-content">
-            <span class="close-button" data-close="blog">&times;</span>
-            <h2>Blog</h2>
-            <p>...</p>
-        </div>
-    </div>
+            <section id="chessitron">
+                <h2>Chessitron</h2>
+                <p>Experience Chessitron, an intuitive AI chess analytical app for iOS.</p>
+                <!-- Add interactive elements or descriptions -->
+            </section>
 
-    <script src="script.js"></script>
+            <section id="food">
+                <h2>Food</h2>
+                <p>Join me on a culinary journey with recipes and food photography.</p>
+                <!-- Add content -->
+            </section>
+
+            <section id="guides">
+                <h2>Guides</h2>
+                <p>Browse through guides and tutorials on various topics I'm passionate about.</p>
+                <!-- Add content -->
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Jeromy Mobley</p>
+        </footer>
+    </div>
+    <!-- Include any required scripts here -->
 </body>
 </html>
+

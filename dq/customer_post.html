@@ -14,6 +14,7 @@
             text-decoration: underline;
             font-size: 24px;
             margin-bottom: 20px;
+            color: #e31837;
         }
         img {
             max-width: 150px;
@@ -21,17 +22,25 @@
         }
         textarea {
             width: 100%;
-            height: 400px;
-            font-size: 18px;
+            height: 350px;
+            font-size: 16px;
             line-height: 1.6;
-            border: 2px solid #000;
+            border: 2px solid #e31837;
             padding: 20px;
-            box-sizing: border-box;
+            border-radius: 5px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            resize: vertical;
+            font-family: 'Georgia', serif;
         }
         /* Print-friendly Styles */
         @media print {
             textarea {
                 border: none;
+                box-shadow: none;
+            }
+            img {
+                display: block;
+                margin: 0 auto 20px auto;
             }
             body {
                 margin: 10mm;
@@ -40,7 +49,7 @@
     </style>
 </head>
 <body>
-    <img src="dqlogo.svg" alt="Dairy Queen Logo">
+    <img src="dq_logo.png" alt="Dairy Queen Logo">
     <h1>Welcome to Dairy Queen Courtenay!</h1>
     <textarea placeholder="Type your message here..."></textarea>
 </body>

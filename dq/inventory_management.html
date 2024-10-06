@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Management Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ffffff;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #00539f;
+        }
+        table {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background-color: #dddddd;
+        }
+        input[type="text"], input[type="number"] {
+            width: 90%;
+            padding: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .category {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: left;
+        }
+        /* Print-friendly Styles */
+        @media print {
+            body {
+                margin: 10mm;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            input {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventory Management Sheet</h1>
+    <h2>Store: 26949 | Address: 1030 Cliffe Avenue, Courtenay, BC</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Item</th>
+                <th>Par Level</th>
+                <th>Current Level</th>
+                <th>Order Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dry Goods -->
+            <tr class="category" colspan="5">Dry Goods</tr>
+            <tr>
+                <td></td>
+                <td>Straws</td>
+                <td>100</td>
+                <td><input type="number" min="0"></td>
+                <td><input type="number" min="0"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Napkins</td>
+                <td>200</td>
+                <td><input type="number" min="0"></td>
+                <td><input type="number" min="0"></td>
+            </tr>
+            <!-- Frozen Goods -->
+            <tr class="category">
+                <td colspan="5">Frozen Goods</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Vanilla Ice Cream Mix</td>
+                <td>50</td>
+                <td><input type="number" min="0"></td>
+                <td><input type="number" min="0"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Chocolate Syrup</td>
+                <td>30</td>
+                <td><input type="number" min="0"></td>
+                <td><input type="number" min="0"></td>
+            </tr>
+            <!-- Add more categories and items as needed -->
+        </tbody>
+    </table>
+</body>
+</html>

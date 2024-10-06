@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Jobs Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ffffff;
+        }
+        h1 {
+            text-align: center;
+            color: #00539f;
+            margin-bottom: 20px;
+        }
+        .areas {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .area {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .area h2 {
+            font-size: 18px;
+            color: #e31837;
+            border-bottom: 2px solid #e31837;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .tasks {
+            list-style-type: none;
+            padding: 0;
+        }
+        .tasks li {
+            margin-bottom: 8px;
+        }
+        .tasks li label {
+            cursor: pointer;
+        }
+        .generate-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #00539f;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+        }
+        .generate-button:hover {
+            background-color: #e31837;
+        }
+        /* Printable Section */
+        #printSection {
+            display: none;
+            margin-top: 30px;
+        }
+        #printSection h2 {
+            text-align: left;
+            color: #00539f;
+            margin-bottom: 10px;
+        }
+        #printSection table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        #printSection th, #printSection td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        #printSection th {
+            background-color: #f2f2f2;
+        }
+        /* Signature Section */
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .signature {
+            width: 45%;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+        }
+        /* Print-friendly Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printSection, #printSection * {
+                visibility: visible;
+            }
+            #printSection {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function generatePrintSheet() {
+            const areas = document.querySelectorAll('.area');
+            let printHTML = '<h2>Daily Jobs Checklist</h2><table>';
+            printHTML += '<tr><th>Task</th><th>Employee Check-off</th><th>Supervisor Confirmation</th></tr>';
+
+            let tasksSelected = false;
+
+            areas.forEach(area => {
+                const areaName = area.querySelector('h2').innerText;
+                const tasks = area.querySelectorAll('input[type="checkbox"]');
+                let areaHasTasks = false;
+                let areaTasksHTML = '';
+
+                tasks.forEach(task => {
+                    if (task.checked) {
+                        tasksSelected = true;
+                        areaHasTasks = true;
+                        areaTasksHTML += `<tr><td>${task.value}</td><td></td><td></td></tr>`;
+                    }
+                });
+
+                if (areaHasTasks) {
+                    printHTML += `<tr><td colspan="3" style="background-color: #d9edf7; font-weight: bold;">${areaName}</td></tr>`;
+                    printHTML += areaTasksHTML;
+                }
+            });
+
+            printHTML += '</table>';
+
+            if (tasksSelected) {
+                document.getElementById('printSection').innerHTML = printHTML;
+                document.getElementById('printSection').style.display = 'block';
+                window.print();
+                document.getElementById('printSection').style.display = 'none'; // Hide after printing
+            } else {
+                alert('Please select at least one task to generate the print sheet.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Daily Jobs Sheet</h1>
+    <div class="areas">
+        <div class="area">
+            <h2>Drive Thru</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Clean windows"> Clean windows</label></li>
+                <li><label><input type="checkbox" value="Sweep the area"> Sweep the area</label></li>
+                <li><label><input type="checkbox" value="Empty trash bins"> Empty trash bins</label></li>
+                <li><label><input type="checkbox" value="Wipe down counters"> Wipe down counters</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Downstairs</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Clean lobby floors"> Clean lobby floors</label></li>
+                <li><label><input type="checkbox" value="Dust shelves"> Dust shelves</label></li>
+                <li><label><input type="checkbox" value="Clean lobby windows"> Clean lobby windows</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Washrooms</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Disinfect sinks"> Disinfect sinks</label></li>
+                <li><label><input type="checkbox" value="Clean toilets"> Clean toilets</label></li>
+                <li><label><input type="checkbox" value="Restock supplies"> Restock supplies</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floors"> Sweep and mop floors</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Staff Room & Change Room</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Clean tables and chairs"> Clean tables and chairs</label></li>
+                <li><label><input type="checkbox" value="Organize storage"> Organize storage</label></li>
+                <li><label><input type="checkbox" value="Empty trash bins"> Empty trash bins</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Box Room</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Organize boxes"> Organize boxes</label></li>
+                <li><label><input type="checkbox" value="Sweep the floor"> Sweep the floor</label></li>
+                <li><label><input type="checkbox" value="Check inventory"> Check inventory</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Upstairs Mop Room</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Organize mops and cleaning supplies"> Organize mops and cleaning supplies</label></li>
+                <li><label><input type="checkbox" value="Clean mop buckets"> Clean mop buckets</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floors"> Sweep and mop floors</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Walk-In Freezer & Fridge</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Organize products"> Organize products</label></li>
+                <li><label><input type="checkbox" value="Check for expired items"> Check for expired items</label></li>
+                <li><label><input type="checkbox" value="Clean shelves"> Clean shelves</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floors"> Sweep and mop floors</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Kitchen</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Clean countertops"> Clean countertops</label></li>
+                <li><label><input type="checkbox" value="Sanitize equipment"> Sanitize equipment</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floors"> Sweep and mop floors</label></li>
+                <li><label><input type="checkbox" value="Empty trash bins"> Empty trash bins</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Back Sink</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Clean sink area"> Clean sink area</label></li>
+                <li><label><input type="checkbox" value="Sanitize faucets"> Sanitize faucets</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floor"> Sweep and mop floor</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Office</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Organize paperwork"> Organize paperwork</label></li>
+                <li><label><input type="checkbox" value="Dust shelves"> Dust shelves</label></li>
+                <li><label><input type="checkbox" value="Clean desk areas"> Clean desk areas</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+        <div class="area">
+            <h2>Storage Aisles</h2>
+            <ul class="tasks">
+                <li><label><input type="checkbox" value="Organize shelves"> Organize shelves</label></li>
+                <li><label><input type="checkbox" value="Check inventory"> Check inventory</label></li>
+                <li><label><input type="checkbox" value="Sweep and mop floors"> Sweep and mop floors</label></li>
+                <!-- Add more tasks as needed -->
+            </ul>
+        </div>
+    </div>
+
+    <button class="generate-button" onclick="generatePrintSheet()">Generate Print Sheet</button>
+
+    <div id="printSection"></div>
+
+    <div class="signature-section" id="signatureSection">
+        <div class="signature">
+            <div class="signature-line"></div>
+            <p>Employee Signature</p>
+        </div>
+        <div class="signature">
+            <div class="signature-line"></div>
+            <p>Supervisor Signature</p>
+        </div>
+    </div>
+</body>
+</html>
+

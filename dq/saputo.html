@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saputo Order Guide Template</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Saputo Order Guide Template</h1>
+<p> All orders must be in by 9 am. </p>
+<p> Phone number: 1-877-341-8700 </p>
+<p> Account number: 4801 4500 </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item Code</th>
+                <th>Item Name</th>
+                <th>Mon for Wed</th>
+                <th>Wed for Thurs</th>
+                <th>Sat for Mon</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CH-001</td>
+                <td>Vanilla Soft Serve</td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+
+            </tr>
+            <tr>
+                <td>CH-002</td>
+                <td>Chocolate Soft Serve</td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+
+            </tr>
+            <tr>
+                <td>BT-001</td>
+                <td>2% Milk 4L</td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+
+            </tr>
+            <tr>
+                <td>BT-002</td>
+                <td>Coffee Creamer</td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+                <td><input type="number" min="0" value="0"></td>
+
+            </tr>
+
+        </tbody>
+    </table>
+
+    <button type="button" onclick="window.print()">Print Order Guide</button>
+</body>
+</html>

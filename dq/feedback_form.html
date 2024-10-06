@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ffffff;
+        }
+        h1 {
+            text-align: center;
+            color: #00539f;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #e31837;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e31837;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .rating label {
+            margin-right: 10px;
+            font-weight: normal;
+        }
+        .rating input {
+            margin-right: 5px;
+        }
+        /* Print-friendly Styles */
+        @media print {
+            body {
+                margin: 10mm;
+            }
+            .no-print {
+                display: none;
+            }
+            textarea {
+                border: none;
+                background-color: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Feedback Form</h1>
+
+    <!-- Employee Feedback Section -->
+    <div class="section">
+        <h2>Employee Feedback</h2>
+        <form>
+            <label for="employee-name">Name:</label>
+            <input type="text" id="employee-name" name="employee-name" placeholder="Your Name">
+
+            <label for="employee-feedback">Feedback:</label>
+            <textarea id="employee-feedback" name="employee-feedback" placeholder="Enter your feedback here..."></textarea>
+
+            <label>Rate Your Satisfaction:</label>
+            <div class="rating">
+                <input type="radio" id="employee-rating-1" name="employee-rating" value="1">
+                <label for="employee-rating-1">1</label>
+                <input type="radio" id="employee-rating-2" name="employee-rating" value="2">
+                <label for="employee-rating-2">2</label>
+                <input type="radio" id="employee-rating-3" name="employee-rating" value="3">
+                <label for="employee-rating-3">3</label>
+                <input type="radio" id="employee-rating-4" name="employee-rating" value="4">
+                <label for="employee-rating-4">4</label>
+                <input type="radio" id="employee-rating-5" name="employee-rating" value="5">
+                <label for="employee-rating-5">5</label>
+            </div>
+        </form>
+    </div>
+
+    </div>
+</body>
+</html>

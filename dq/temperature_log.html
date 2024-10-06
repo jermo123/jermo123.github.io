@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temperature Log Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10mm;
+            background-color: #ffffff;
+            font-size: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #e31837;
+            margin: 5px 0;
+        }
+        h2 {
+            color: #00539f;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .recorded-by-section {
+            margin-bottom: 10px;
+        }
+        .recorded-by-section table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+        }
+        .recorded-by-section th, .recorded-by-section td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .recorded-by-section th {
+            background-color: #f2f2f2;
+            font-size: 7px;
+        }
+        .recorded-by-section .initials {
+            height: 20px;
+        }
+        table.main-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            table-layout: fixed;
+        }
+        table.main-table th, table.main-table td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+        table.main-table th {
+            background-color: #f2f2f2;
+            font-size: 7px;
+        }
+        .temp-range {
+            font-size: 6px;
+            color: #555;
+        }
+        .area-title {
+            background-color: #d9edf7;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 5px;
+            font-size: 9px;
+        }
+        .temp-entry {
+            font-size: 8px;
+            line-height: 1.2;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .signature {
+            width: 45%;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 20px;
+        }
+        /* Print-friendly Styles */
+        @media print {
+            body {
+                margin: 10mm;
+            }
+            table {
+                font-size: 6px;
+            }
+            h1 {
+                font-size: 14px;
+            }
+            h2 {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Temperature Log Sheet</h1>
+    <h2>Store: 26949 | Address: 1030 Cliffe Avenue, Courtenay, BC</h2>
+    
+
+    
+    <!-- Main Temperature Log Table -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+            </tr>
+            <tr>
+                <!-- Day Columns Headers -->
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+                <th>Temp (Day / Night, F)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Kitchen Area -->
+            <tr class="area-title">
+                <td colspan="8">Kitchen</td>
+            </tr>
+            <!-- Gravy -->
+            <tr>
+                <td>Gravy <br><span class="temp-range">At least 160°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Left Prep Table -->
+            <tr>
+                <td>Left Prep Table <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Right Prep Table -->
+            <tr>
+                <td>Right Prep Table <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Raw Meat Freezer -->
+            <tr>
+                <td>Raw Meat Freezer <br><span class="temp-range">-10-0°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Fryer Freezer -->
+            <tr>
+                <td>Fryer Freezer <br><span class="temp-range">-10-0°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Mushroom Sauce -->
+            <tr>
+                <td>Mushroom Sauce <br><span class="temp-range">At least 140°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Bottled Condiments -->
+            <tr>
+                <td>Bottled Condiments <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Cheese Slices -->
+            <tr>
+                <td>Cheese Slices <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Nieco -->
+            <tr>
+                <td>Nieco <br><span class="temp-range">Record Current Temp</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Dishwasher -->
+            <tr>
+                <td>Dishwasher <br><span class="temp-range">150-160°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Beef Cookout -->
+            <tr>
+                <td>Beef Cookout <br><span class="temp-range">165-175°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Grilled Chicken Cookout -->
+            <tr>
+                <td>Grilled Chicken Cookout <br><span class="temp-range">165-175°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Crispy Chicken Cookout -->
+            <tr>
+                <td>Crispy Chicken Cookout <br><span class="temp-range">165-175°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Chicken Strip Cookout -->
+            <tr>
+                <td>Chicken Strip Cookout <br><span class="temp-range">165-175°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Sanitizer PPM -->
+            <tr>
+                <td>Sanitizer PPM <br><span class="temp-range">200 PPM</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+
+            <!-- Counter Area -->
+            <tr class="area-title">
+                <td colspan="8">Counter</td>
+            </tr>
+            <!-- Milk Fridge -->
+            <tr>
+                <td>Milk Fridge <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Topping Freezer -->
+            <tr>
+                <td>Topping Freezer <br><span class="temp-range">-10-0°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Strawberry Topping -->
+            <tr>
+                <td>Strawberry Topping <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Soft Serve Mix (Double) -->
+            <tr>
+                <td>Soft Serve Mix (Double) <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Soft Serve Mix (Far V) -->
+            <tr>
+                <td>Soft Serve Mix (Far V) <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+
+            <!-- Drive-Thru Area -->
+            <tr class="area-title">
+                <td colspan="8">Drive-Thru</td>
+            </tr>
+            <!-- Milk Fridge -->
+            <tr>
+                <td>Milk Fridge <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Topping Freezer -->
+            <tr>
+                <td>Topping Freezer <br><span class="temp-range">-10-0°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Strawberry Topping -->
+            <tr>
+                <td>Strawberry Topping <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Soft Serve Mix -->
+            <tr>
+                <td>Soft Serve Mix <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+
+            <!-- Misc. Area -->
+            <tr class="area-title">
+                <td colspan="8">Misc.</td>
+            </tr>
+            <!-- Walk In Freezer -->
+            <tr>
+                <td>Walk In Freezer <br><span class="temp-range">-10-0°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+            <!-- Walk In Cooler -->
+            <tr>
+                <td>Walk In Cooler <br><span class="temp-range">33-38°F</span></td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+                <td class="temp-entry">____ / ____</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Signature Section -->
+
+    </div>
+</body>
+</html>
